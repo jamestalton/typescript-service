@@ -1,0 +1,20 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "commonjs",
+        "allowJs": false,
+        "sourceMap": true,
+        "declaration": true,
+        "alwaysStrict": false,
+        "noUnusedLocals": false,
+        "noUnusedParameters": false,
+        "noFallthroughCasesInSwitch": true,
+        "moduleResolution": "node",
+        "noImplicitAny": true,
+        "outDir": "./built",
+        "noImplicitUseStrict": true,
+        "removeComments": true,
+        "lib": ["esnext"]
+    },
+    "include": ["src/**/*.ts"]
+}

@@ -1,0 +1,134 @@
+{
+    "name": "typescript-server-template",
+    "version": "0.0.1",
+    "description": "NodeJS Server Template",
+    "author": "James Talton",
+    "license": "UNLICENSED",
+    "private": true,
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/jamestalton/typescript-server-template.git"
+    },
+    "scripts": {
+        "build": "rm -rf built && tsc",
+        "test": "npm run clean-build && npm run eslint && npm run prettier-check && npm run jest",
+        "jest": "rm -rf coverage && jest --detectOpenHandles",
+        "eslint": "eslint src test --ext .ts --max-warnings=0",
+        "eslint-fix": "eslint src test --ext .ts --fix",
+        "prettier-write": "prettier --write **/*.ts **/*.css **/*.scss **/*.json **/*.md !coverage/** !built/** !public/** !schema/** !**/package-lock.json",
+        "prettier-check": "prettier --check **/*.ts **/*.css **/*.scss **/*.json **/*.md !coverage/** !built/** !public/** !schema/** !**/package-lock.json",
+        "prestart": "if [ ! -d node_modules ]; then npm ci; fi && rm -rf built coverage dist",
+        "start": "NODE_ENV=development LOG_LEVEL=silly LOG_COLOR=true PORT=3000 ts-node-dev --no-notify --no-deps --respawn --transpile-only src/main.ts",
+        "clean": "npm run clean-build && rm -rf package-lock.json node_modules",
+        "clean-build": "rm -rf built coverage",
+        "update": "npm run clean && npx npm-check-updates -u && npm install && npm audit fix",
+        "docker:build": "npm run clean-build && docker build --pull -t app .",
+        "docker:run": "npm run docker:build && docker run --name app -p 3000:3000 -e PORT=3000 --rm app"
+    },
+    "dependencies": {
+        "@types/pino": "^5.14.0",
+        "etag": "^1.8.1",
+        "get-value": "^3.0.1",
+        "pino": "^5.14.0",
+        "selfsigned": "^1.10.7",
+        "set-value": "^3.0.1"
+    },
+    "devDependencies": {
+        "@types/etag": "^1.8.0",
+        "@types/get-value": "^3.0.1",
+        "@types/jest": "^24.x.x",
+        "@types/node": "^12.x.x",
+        "@typescript-eslint/eslint-plugin": "^2.11.0",
+        "@typescript-eslint/parser": "^2.11.0",
+        "axios": "^0.19.0",
+        "eslint": "^6.7.2",
+        "eslint-config-prettier": "^6.7.0",
+        "eslint-plugin-prettier": "^3.1.1",
+        "jest": "^24.x.x",
+        "nock": "^11.7.0",
+        "prettier": "^1.19.1",
+        "ts-jest": "^24.x.x",
+        "ts-node": "^8.5.4",
+        "ts-node-dev": "^1.0.0-pre.44",
+        "typescript": "^3.7.3"
+    },
+    "prettier": {
+        "printWidth": 120,
+        "tabWidth": 4,
+        "semi": false,
+        "singleQuote": true
+    },
+    "jest": {
+        "testEnvironment": "node",
+        "transform": {
+            "^.+\\.tsx?$": "ts-jest"
+        },
+        "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+        "collectCoverage": true,
+        "coverageThreshold": {
+            "global": {
+                "branches": 0,
+                "functions": 0,
+                "lines": 0,
+                "statements": 0
+            }
+        },
+        "coverageReporters": [
+            "text-summary",
+            "html"
+        ],
+        "collectCoverageFrom": [
+            "src/**/*.ts",
+            "!**/node_modules/**",
+            "!<rootDir>/src/typings.d.ts"
+        ],
+        "moduleFileExtensions": [
+            "ts",
+            "tsx",
+            "js",
+            "jsx",
+            "json",
+            "node"
+        ],
+        "setupFiles": [
+            "<rootDir>/test/jest-setup.ts"
+        ]
+    },
+    "eslintConfig": {
+        "parser": "@typescript-eslint/parser",
+        "parserOptions": {
+            "ecmaVersion": 2018,
+            "sourceType": "module",
+            "project": [
+                "./tsconfig.json",
+                "./test/tsconfig.json"
+            ]
+        },
+        "extends": [
+            "eslint:recommended",
+            "plugin:@typescript-eslint/eslint-recommended",
+            "plugin:@typescript-eslint/recommended",
+            "plugin:@typescript-eslint/recommended-requiring-type-checking",
+            "prettier/@typescript-eslint",
+            "plugin:prettier/recommended"
+        ],
+        "rules": {
+            "@typescript-eslint/no-use-before-define": "off",
+            "@typescript-eslint/no-unused-vars": "off",
+            "@typescript-eslint/interface-name-prefix": [
+                "error",
+                {
+                    "prefixWithI": "always"
+                }
+            ],
+            "@typescript-eslint/no-floating-promises": [
+                "error",
+                {
+                    "ignoreVoid": true
+                }
+            ],
+            "no-console": "error",
+            "no-process-exit": "error"
+        }
+    }
+}

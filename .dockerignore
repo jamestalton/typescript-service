@@ -1,0 +1,8 @@
+/.DS_Store
+/.git
+/coverage
+/node_modules
+/.dockerignore
+/.gitignore
+/Dockerfile
+/README.md
