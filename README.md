@@ -2,6 +2,8 @@
 
 Template project for creating a http server using NodeJS and Typescript.
 
+[![Build Status](https://travis-ci.com/jamestalton/typescript-server-template.svg?branch=master)](https://travis-ci.com/jamestalton/typescript-server-template)
+
 NodeJS and Typescript are a good choice for creating a http server. Strong type-checking, fast development, great environment, strong community, and good performance all make for a very pleasant and powerful technology for web services.
 
 This template includes:
