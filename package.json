@@ -10,7 +10,7 @@
         "url": "https://github.com/jamestalton/typescript-server-template.git"
     },
     "scripts": {
-        "build": "tsc --build --clean",
+        "build": "tsc --build --clean && tsc",
         "test": "npm run eslint && npm run prettier && npm run jest && npm audit",
         "jest": "jest --detectOpenHandles",
         "eslint": "eslint src test --ext .ts --max-warnings=0",
