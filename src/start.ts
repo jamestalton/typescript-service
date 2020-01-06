@@ -6,6 +6,7 @@ let server: Http2Server
 
 function handleRequest(req: Http2ServerRequest, res: Http2ServerResponse): void {
     const responseBody = {
+        message: 'Hello World',
         method: req.method,
         url: req.url
     }

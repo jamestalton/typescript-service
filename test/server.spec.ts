@@ -32,7 +32,7 @@ afterAll(async function() {
     nock.restore()
 })
 
-describe(`Server should return`, function() {
+describe(`Server Route Tests`, function() {
     it(`GET /test return status 200 "${STATUS_CODES[200]}"`, async function() {
         const response = await request.get(`/test`)
         expect(response.status).toEqual(200)
