@@ -1,10 +1,10 @@
-import { Http2Server, Http2ServerRequest, Http2ServerResponse } from 'http2'
 import { createAppServer } from './server'
 import { logger } from './logger'
+import { Server, IncomingMessage, ServerResponse } from 'http'
 
-let server: Http2Server
+let server: Server
 
-function handleRequest(req: Http2ServerRequest, res: Http2ServerResponse): void {
+function handleRequest(req: IncomingMessage, res: ServerResponse): void {
     const responseBody = {
         message: 'Hello World',
         method: req.method,
@@ -19,9 +19,8 @@ function handleRequest(req: Http2ServerRequest, res: Http2ServerResponse): void 
     res.end(buffer)
 }
 
-export async function start(): Promise<Http2Server> {
-    const requestHandler: (req: Http2ServerRequest, res: Http2ServerResponse) => void = handleRequest
-    server = await createAppServer(requestHandler)
+export function start(): Server {
+    server = createAppServer(handleRequest)
     server.listen(process.env.PORT)
     return server
 }

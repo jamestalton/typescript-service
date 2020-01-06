@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import { shutdown, start } from './start'
 import { cpus, totalmem } from 'os'
 import { logger } from './logger'

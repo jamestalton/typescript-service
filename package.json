@@ -20,9 +20,7 @@
         "docker:build": "docker build --pull -t app .",
         "docker:run": "npm run docker:build && docker run -t --name app -p 3000:3000 -e PORT=3000 --rm app"
     },
-    "dependencies": {
-        "selfsigned": "^1.10.7"
-    },
+    "dependencies": {},
     "devDependencies": {
         "@types/jest": "^24.x.x",
         "@types/node": "^13.x.x",
@@ -55,10 +53,10 @@
         "collectCoverage": true,
         "coverageThreshold": {
             "global": {
-                "branches": 0,
-                "functions": 0,
-                "lines": 0,
-                "statements": 0
+                "branches": 100,
+                "functions": 100,
+                "lines": 100,
+                "statements": 100
             }
         },
         "coverageReporters": [

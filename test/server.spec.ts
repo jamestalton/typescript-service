@@ -1,28 +1,23 @@
 import * as axios from 'axios'
-import { Http2Server } from 'http2'
-import { Agent } from 'https'
 import { AddressInfo } from 'net'
 import * as nock from 'nock'
 import { start, shutdown } from '../src/start'
-import { STATUS_CODES } from 'http'
+import { STATUS_CODES, Server } from 'http'
 
-let server: Http2Server
+let server: Server
 let request: axios.AxiosInstance
 
-beforeAll(async function() {
+beforeAll(function() {
     nock.disableNetConnect()
     nock.enableNetConnect('127.0.0.1')
     nock.enableNetConnect('localhost')
 
-    server = await start()
+    server = start()
 
     const port = (server.address() as AddressInfo).port
     request = axios.default.create({
-        baseURL: `https://localhost:${port}`,
-        validateStatus: () => true,
-        httpsAgent: new Agent({
-            rejectUnauthorized: false
-        })
+        baseURL: `http://localhost:${port}`,
+        validateStatus: () => true
     })
 })
 
