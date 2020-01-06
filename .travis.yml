@@ -21,9 +21,9 @@ jobs:
               - git config --global user.email "travis@travis-ci.org"
               - git config --global user.name "Travis CI"
               - git remote remove origin
-              - git remote add origin https://${GH_TOKEN}@github.com/jamestalton/${PACKAGE_NAME}.git > /dev/null 2>&1
+              - git remote add origin https://${GH_TOKEN}@github.com/jamestalton/typescript-server-template.git > /dev/null 2>&1
               - git checkout master
-              - docker run --rm -v $PWD:/app node:12-alpine sh -c "cd /app && npm run update" && \
-                git add -u :/ && \
-                git commit -m "update dependencies [ci skip]" && \
+              - docker run --rm -v $PWD:/app node:12-alpine sh -c "cd /app && npm run update" &&
+                git add -u :/ &&
+                git commit -m "update dependencies [ci skip]" &&
                 git push origin master
