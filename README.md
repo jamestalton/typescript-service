@@ -11,8 +11,8 @@ This template includes:
 -   Unit Tests using Jest
 -   Linting using ESLint
 -   Formatting using Prettier
--   Security Audits
--   Docker Image Building
+-   Security Audits using NPM
+-   Support for building a Docker Image
 
 ## Prerequisites
 
@@ -20,7 +20,7 @@ This template includes:
 
 ## Install dependencies
 
-Using npm ci installs the exact versions of dependencies listing in the package-lock.json into the node_modules directory.
+Using npm ci installs the exact versions of dependencies listed in the package-lock.json into the node_modules directory.
 NodeJS will be able to find the dependencies when running the server.
 
 ```
@@ -62,6 +62,8 @@ Jest is a test runner. It will run each test file in parallel speeding up testin
 
 Jest is configured in the jest section of the package.json. It is setup to use TS-Node for real-time compilation and running of tests.
 
+VSCode Plugin: ESJest
+
 Using VSCode, install the Jest plugin and tests will run real-time in VSCode with failure feedback. This makes writing and maintaining tests a breeze. The project is also already setup for debugging tests using VSCode if needed.
 
 ```
@@ -76,6 +78,8 @@ ESLint is used in favor of TSLint as TSLint has been deprecated in favor of enha
 
 ESLint is configured in the eslint section of the package.json.
 
+VSCode Plugin: ESLint
+
 ```
 npm run eslint
 ```
@@ -86,6 +90,8 @@ Prettier is a code formatter that formats the code with strict formatting guidel
 Using prettier removes arguments about code formatting and keeps code commits consistent making for easier code reviews.
 
 Prettier is configured in the prettier section of the package.json.
+
+VSCode Plugin: Prettier
 
 ```
 npm run prettier
