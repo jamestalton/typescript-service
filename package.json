@@ -16,7 +16,7 @@
         "eslint": "eslint src test --ext .ts --max-warnings=0",
         "prettier": "prettier --check **/*.ts **/*.json **/*.md !coverage/** !lib/** !**/package-lock.json",
         "start": "NODE_ENV=development LOG_LEVEL=debug LOG_COLOR=true PORT=3000 ts-node-dev --no-notify --no-deps --respawn --transpile-only src/main.ts",
-        "update": "rm -rf package-lock.json node_modules && npx npm-check-updates -u && npm install && npm audit fix",
+        "update": "rm -rf package-lock.json node_modules && npx npm-check-updates -u && npm install && npm audit fix && npm test",
         "docker:build": "docker build --pull -t app .",
         "docker:run": "npm run docker:build && docker run -t --name app -p 3000:3000 -e PORT=3000 --rm app"
     },
@@ -25,20 +25,20 @@
     },
     "devDependencies": {
         "@types/jest": "^24.x.x",
-        "@types/node": "^12.x.x",
-        "@typescript-eslint/eslint-plugin": "^2.11.0",
-        "@typescript-eslint/parser": "^2.11.0",
+        "@types/node": "^13.x.x",
+        "@typescript-eslint/eslint-plugin": "^2.14.0",
+        "@typescript-eslint/parser": "^2.14.0",
         "axios": "^0.19.0",
-        "eslint": "^6.7.2",
-        "eslint-config-prettier": "^6.7.0",
-        "eslint-plugin-prettier": "^3.1.1",
+        "eslint": "^6.8.0",
+        "eslint-config-prettier": "^6.9.0",
+        "eslint-plugin-prettier": "^3.1.2",
         "jest": "^24.x.x",
-        "nock": "^11.7.0",
+        "nock": "^11.7.1",
         "prettier": "^1.19.1",
         "ts-jest": "^24.x.x",
         "ts-node": "^8.5.4",
         "ts-node-dev": "^1.0.0-pre.44",
-        "typescript": "^3.7.3"
+        "typescript": "^3.7.4"
     },
     "prettier": {
         "printWidth": 120,

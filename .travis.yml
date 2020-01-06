@@ -1,0 +1,29 @@
+language: minimal
+
+services:
+    - docker
+
+jobs:
+    include:
+        - stage: Pull request
+          if: type = pull_request
+          script: docker build --pull -t app .
+
+        - stage: Build, Test, and Push
+          if: type = push AND branch = master
+          script:
+              - docker build --pull -t app .
+              - echo TODO docker push
+
+        - stage: Automated Dependency Upgrade
+          if: type = cron AND branch = master
+          script:
+              - git config --global user.email "travis@travis-ci.org"
+              - git config --global user.name "Travis CI"
+              - git remote remove origin
+              - git remote add origin https://${GH_TOKEN}@github.com/jamestalton/${PACKAGE_NAME}.git > /dev/null 2>&1
+              - git checkout master
+              - docker run --rm -v $PWD:/app node:12-alpine sh -c "cd /app && npm run update" && \
+                git add -u :/ && \
+                git commit -m "update dependencies [ci skip]" && \
+                git push origin master
