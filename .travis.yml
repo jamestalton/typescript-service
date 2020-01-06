@@ -13,7 +13,7 @@ jobs:
           if: type = push AND branch = master
           script:
               - docker build --pull -t app .
-              - echo TODO docker push
+              - echo docker push app
 
         - stage: Automated Dependency Upgrade
           if: type = cron AND branch = master
@@ -25,5 +25,5 @@ jobs:
               - git checkout master
               - docker run --rm -v $PWD:/app node:12-alpine sh -c "cd /app && npm run update" &&
                 git add -u :/ &&
-                git commit -m "update dependencies [ci skip]" &&
+                git commit -m "update dependencies" &&
                 git push origin master

@@ -4,19 +4,23 @@ import { Server, IncomingMessage, ServerResponse } from 'http'
 
 let server: Server
 
-function handleRequest(req: IncomingMessage, res: ServerResponse): void {
-    const responseBody = {
-        message: 'Hello World',
-        method: req.method,
-        url: req.url
-    }
-
-    const buffer = Buffer.from(JSON.stringify(responseBody))
-
+function sendJson(jsonObject: object, res: ServerResponse): void {
+    const buffer = Buffer.from(JSON.stringify(jsonObject))
     res.setHeader('Content-Length', buffer.length)
     res.setHeader('Content-Type', 'application/json')
     res.writeHead(200)
     res.end(buffer)
+}
+
+function handleRequest(req: IncomingMessage, res: ServerResponse): void {
+    sendJson(
+        {
+            message: 'Hello World',
+            method: req.method,
+            url: req.url
+        },
+        res
+    )
 }
 
 export function start(): Server {
