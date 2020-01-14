@@ -1,5 +1,5 @@
 import { createAppServer } from './server'
-import { logger } from './logger'
+import { logger, loggerShutdown } from './logger'
 import { Server, IncomingMessage, ServerResponse } from 'http'
 
 let server: Server
@@ -34,5 +34,7 @@ export async function shutdown(): Promise<void> {
     await new Promise(resolve => server.close(resolve))
 
     // Shutdown any other dependencies here
-    // i.e. database connections, loggers, etc...
+    // i.e. database connections, etc...
+
+    loggerShutdown()
 }

@@ -1,37 +1,40 @@
 /* istanbul ignore file */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 
-// Logger abstraction
+// process.env.LOG_LEVEL : "trace" | "debug" | "info" | "warn" | "error" | "fatal" | "silent"
 
-/**
- * Logger abstraction interface
- *
- * This interface abstracts the logger so that it can be hooked to any of the popular loggers out there.
- * By default it logs to the console as the logger.
- *
- */
-export interface ILogger {
-    debug: (message: any) => any
-    info: (message: any) => any
-    warn: (message: any) => any
-    error: (message: any) => any
+import * as pino from 'pino'
+
+const options: pino.LoggerOptions = {
+    safe: false,
+    useLevelLabels: true,
+    base: {
+        region: process.env.REGION,
+        version: process.env.VERSION
+    },
+    level: process.env.LOG_LEVEL ? process.env.LOG_LEVEL : 'debug',
+    timestamp: false
 }
 
-function noop(): void {
-    // Do nothing
+let stream: pino.DestinationStream
+let timeout: NodeJS.Timeout
+if (process.env.NODE_ENV === 'production') {
+    stream = pino.extreme()
+    timeout = setInterval(function loggerFlush() {
+        logger.flush()
+    }, 10 * 1000)
 }
 
-export let logger: ILogger = {
-    debug: noop,
-    info: noop,
-    warn: noop,
-    error: noop
-}
+export const logger: pino.Logger = pino(options, stream)
 
-export function setLogger(newLogger: ILogger): void {
-    logger = newLogger
-}
-
-if (process.env.LOG_LEVEL != 'none') {
-    setLogger(console)
+export function loggerShutdown(): void {
+    if (timeout != undefined) {
+        clearInterval(timeout)
+        timeout = undefined
+    }
+    if (stream != undefined) {
+        pino.final(logger, (err, finalLogger, evt) => {
+            if (err) finalLogger.error(err, 'error caused exit')
+            finalLogger.flush()
+        })(undefined)
+    }
 }
