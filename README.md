@@ -8,7 +8,7 @@ NodeJS and Typescript are a good choice for creating a http server. Strong type-
 
 This template includes:
 
--   Real-time Typescript compilation using TS-Node
+-   Real-time Typescript transpilation using TS-Node
 -   Debugging setup for VSCode
 -   Unit Tests using Jest
 -   Linting using ESLint
