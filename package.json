@@ -21,7 +21,7 @@
         "docker:run": "npm run docker:build && docker run -t --name app -p 3000:3000 -e PORT=3000 --rm app"
     },
     "dependencies": {
-        "@types/pino": "^5.15.1",
+        "@types/pino": "^5.15.2",
         "pino": "^5.16.0"
     },
     "devDependencies": {
