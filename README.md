@@ -25,11 +25,11 @@ Project template for a web service using [TypeScript](https://www.typescriptlang
 
 ## Introduction
 
-Developing a production level web service takes a lot of work. There are many great technologies that can be used to make web services. This repository focuses on setting up a project for using [TypeScript](https://www.typescriptlang.org/) and [Node.js](https://nodejs.org/en/) to create a web service.
+Developing a production level web service takes a lot of work. There are many great technologies that can be used to make web services. This repository focuses on setting up a project for using [TypeScript](https://www.typescriptlang.org/) and [Node.js](https://nodejs.org/en/).
 
 [Check out the StackOverflow developer survey on most loved technologies.](https://insights.stackoverflow.com/survey/2019#most-loved-dreaded-and-wanted)
 
-What is a web service? An application running in the cloud which can be connect to and use to perform a service.
+What is a web service? An application running in the cloud which can be connect to and used to perform a service.
 
 Node.js is a JavaScript engine made by Google is well-suited for making web services. TypeScript adds strong type checking to JavaScript and combined with linting rules to enforce good code, we end up with a very clean and pleasant development environment.
 
@@ -122,9 +122,9 @@ Unit tests are run using the "*jest*" script defined in [package.json](./package
 npm run jest
 ```
 
-[Jest](https://jestjs.io/) is a JavaScript Testing Framework with a focus on simplicity. Using [ts-jest](https://github.com/kulshekhar/ts-jest), jest is configured in the "*jest*" section of [package.json](./package.json). Jest is configured to enforce 100% code coverage. This is a best practice to ensure either code is tested or marked as not tested and agreed upon in a code review.
+[Jest](https://jestjs.io/) is a JavaScript Testing Framework with a focus on simplicity. Using [ts-jest](https://github.com/kulshekhar/ts-jest), jest is configured in the "*jest*" section of [package.json](./package.json). Jest is configured to enforce 100% code coverage. This is a best practice to ensure either code is tested or explicitly marked as not tested.
 
-Install the [jest plugin](https://marketplace.visualstudio.com/items?itemName=Orta.vscode-jest) for Visual Studio Code which runs the tests while writing the test, giving real-time feedback. The plugin also adds a debug link for debugging a test in Visual Studio Code.
+Install the [jest plugin](https://marketplace.visualstudio.com/items?itemName=Orta.vscode-jest) for Visual Studio Code which runs the tests in the editor, giving real-time feedback. The plugin also adds a debug link for debugging tests in Visual Studio Code.
 
 ### Code Linting
 
