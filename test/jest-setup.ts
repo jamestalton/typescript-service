@@ -4,10 +4,11 @@ process.env.LOG_LEVEL = 'silent'
 import * as axios from 'axios'
 import { AddressInfo } from 'net'
 import * as nock from 'nock'
-import { start, shutdown } from '../src/start'
+import { start, shutdown } from '../src/app'
 import { Server } from 'http'
+import { Http2Server, Http2SecureServer } from 'http2'
 
-let server: Server
+let server: Server | Http2Server | Http2SecureServer
 
 export function setupBeforeAll(): axios.AxiosInstance {
     nock.disableNetConnect()

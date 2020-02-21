@@ -12,7 +12,7 @@
     "scripts": {
         "build": "tsc --build --clean && tsc",
         "test": "npm run eslint && npm run prettier && npm run jest && npm audit",
-        "jest": "jest --detectOpenHandles --verbose",
+        "jest": "jest --verbose",
         "eslint": "eslint src test --ext .ts --max-warnings=0",
         "prettier": "prettier --check **/*.ts **/*.json !coverage/** !lib/** !**/package-lock.json",
         "start": "PORT=3000 ts-node-dev --no-notify --no-deps --respawn --transpile-only src/main.ts | pino-pretty -i time,instance",

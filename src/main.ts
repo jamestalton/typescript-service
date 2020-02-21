@@ -1,6 +1,9 @@
 /* istanbul ignore file */
 
-import { shutdown, start } from './start'
+// Main is the entry point for the service.
+// Unit tests start the app directly and do not run main.
+
+import { shutdown, start } from './app'
 import { cpus, totalmem } from 'os'
 import { logger } from './logger'
 
