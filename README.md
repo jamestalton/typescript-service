@@ -37,7 +37,7 @@ Node.js is a JavaScript engine made by Google is well-suited for making web serv
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/en/about/) is an asynchronous event-driven JavaScript runtime. Node.js is designed to build scalable network applications.
+- [Node.js](https://nodejs.org/en/about/) is an asynchronous event-driven JavaScript runtime designed to build scalable network applications.
 
 - [Visual Studio Code]() is a code editor for building and debugging modern web and cloud applications.
 
@@ -101,7 +101,7 @@ Debugging works as expected with breakpoints, variable watches, and call stacks.
 
 ## Testing
 
-The default command for testing node projects is [npm test](https://docs.npmjs.com/cli/test) which runs the test script from package.json.
+The default command for testing node projects is [npm test](https://docs.npmjs.com/cli/test) which runs the test script from [package.json](./package.json).
 
 ```
 npm test
