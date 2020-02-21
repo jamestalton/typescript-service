@@ -13,7 +13,12 @@ jobs:
           if: type = push AND branch = master
           script:
               - docker build --pull -t app .
-              - echo docker push app
+              # - docker push app
+
+        # - stage: Deploy
+        #   if: type = push AND branch = master
+        #   script:
+        #       - echo Deploy here
 
         - stage: Automated Dependency Upgrade
           if: type = cron AND branch = master

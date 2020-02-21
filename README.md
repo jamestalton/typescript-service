@@ -1,4 +1,4 @@
-# Typescript Service
+# Typescript Service Template
 
 Project template for a web service using [TypeScript](https://www.typescriptlang.org/) and [Node.js](https://nodejs.org/en/).
 
@@ -13,28 +13,15 @@ Project template for a web service using [TypeScript](https://www.typescriptlang
   - [Unit Tests](#unit-tests)
   - [Code Linting](#code-linting)
   - [Code Formatting](#code-formatting)
-- [DevOps](#devops)
-  - [CICD Pipeline](#cicd-pipeline)
-  - [Docker Image](#docker-image)
-  - [Docker Run](#docker-run)
 - [Security](#security)
   - [Dependency Auditing](#dependency-auditing)
   - [Dependency Upgrades](#dependency-upgrades)
 - [Performance](#performance)
   - [Stress Testing](#stress-testing)
   - [Profiling](#profiling)
-
-<!-- NodeJS and Typescript are a good choice for creating a http server. Strong type-checking, fast development, great environment, strong community, and good performance all make for a very pleasant and powerful technology for web services.
-
-This template includes:
-
-- Typescript transpilation using TS-Node
-- Debugging setup for VSCode
-- Unit Tests using Jest
-- Linting using ESLint
-- Formatting using Prettier
-- Security Audits using NPM
-- Support for building a Docker Image -->
+- [DevOps Pipeline](#devops-pipeline)
+  - [Continuous Integration](#continuous-integration)
+  - [Docker Containerization](#docker-containerization)
 
 ## Introduction
 
@@ -63,8 +50,6 @@ Node.js is a JavaScript engine made by Google is well-suited for making web serv
   - The **Jest** plugin runs the tests in the editor.
 
   - The **Prettier** plugin formats the code in the editor.
-
-- [Docker](https://www.docker.com/get-started) is a tool designed to make it easier to create, deploy, and run applications by using containers. Containers allow a developer to package up an application with all of the parts it needs, such as libraries and other dependencies, and ship it all out as one package.
 
 - [Git](https://git-scm.com/) is a free and open source distributed version control system.
 
@@ -110,7 +95,7 @@ The application is running in a "watch" mode, watching for file changes and will
 
 ### Debugging the Service
 
-Visual Studio Code is setup to debug the service in [launch.json](./.vscode/launch.json).
+Visual Studio Code is setup to debug the service using [launch.json](./.vscode/launch.json).
 
 Debugging works as expected with breakpoints, variable watches, and call stacks.
 
@@ -170,38 +155,6 @@ Prettier is configured in the prettier section of the [package.json](./package.j
 
 Install the [Prettier plugin](https://github.com/prettier/prettier-vscode) for Visual Studio Code.
 
-## DevOps
-
-
-### CICD Pipeline
-
-[![Build Status](https://travis-ci.com/jamestalton/typescript-service.svg?branch=master)](https://travis-ci.com/jamestalton/typescript-service)
-
-The CICD pipeline is setup run tests and only accept code changes where all tests pass.
-
-### Docker Image
-
-<!-- The project is also setup to support docker.
-
-You need to have a docker environment installed locally to build and run the docker image.
-
-#### Docker Build
-
-To build the docker image
-
-```
-npm run docker:build
-```
-
-### Docker Run
-
-To run the docker image as a docker container
-
-```
-npm run docker:run
-``` -->
-
-
 ## Security
 
 ### Dependency Auditing
@@ -226,4 +179,59 @@ This will update dependencies, run audits, and run tests.
 
 ### Stress Testing
 
+Stress testing can be run using the "*stress*" script defined in [package.json](./package.json). You must first start the service before running the stress test.
+
+```
+npm run stress
+```
+
+The hardware the test runs on affects the performance. Running on a 2019 MacBook Pro shows an average greater than 50,000 requests per second for the hello world response.
+
 ### Profiling
+
+Profiling the service can show where the bottlenecks are in performance.
+Profiling can be run using the "*profile*" script defined in [package.json](./package.json).
+Once the profiling is done, a flame graph of the results will be generated and opened in a web browser.
+
+```
+npm run profile
+```
+
+## DevOps Pipeline
+
+### Continuous Integration
+
+A CI pipeline is a must have for any project.
+The CI pipeline builds branches and pull requests and ensures that all tests and checks pass. This project is setup to use TravisCI. The builds are defined in [.travis.yml](./.travis.yml).
+
+[![Build Status](https://travis-ci.com/jamestalton/typescript-service.svg?branch=master)](https://travis-ci.com/jamestalton/typescript-service)
+
+### Docker Containerization
+
+[Docker](https://www.docker.com/get-started) is a tool designed to make it easier to create, deploy, and run applications by using containers. Containers allow a developer to package up an application with all of the parts it needs, such as libraries and other dependencies, and ship it all out as one package.
+
+Docker can build images automatically by reading the instructions from a Dockerfile. A Dockerfile is a text document that contains all the commands a user could call on the command line to assemble an image.
+
+This project contains a [Dockerfile](./Dockerfile) that builds off the public [DockerHub official node](https://hub.docker.com/_/node/) docker image to create a docker image for this application.
+
+The docker image is built using the "*docker:build*" script defined in [package.json](./package.json).
+
+```
+npm run docker:build
+```
+
+The docker container is run using the "*docker:run*" script defined in [package.json](./package.json).
+
+```
+npm run docker:run
+```
+
+Memory, cpu, and I/O of running containers can be monitored using docker.
+
+```
+docker stats
+```
+
+| NAME | CPU % | MEM USAGE |
+| ---- | ----- | --------- |
+| app  | 0.00% | 9 MiB     |

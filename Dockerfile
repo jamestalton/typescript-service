@@ -1,7 +1,6 @@
 # Using a multi-stage docker build we can build and test in a builder
 # and then copy just the needed files for deployment to the final image
 
-
 # ----------------------------------------------------------------------
 # BUILDER IMAGE
 
@@ -19,15 +18,14 @@ COPY package.json package-lock.json /app/
 # Install dependencies.
 RUN npm ci
 
-# Copy local code to the container image.
+# Copy local code to the container image. Files listed in .dockerignore are ignored
 COPY . /app/
 
 # Run tests
 RUN npm test
 
-# Build the code
+# Build the app
 RUN npm run build
-
 
 # ----------------------------------------------------------------------
 # FINAL IMAGE
@@ -42,7 +40,7 @@ ENV NODE_ENV production
 # Create and change to the app directory.
 WORKDIR /app
 
-# Install production dependencies.
+# Install only the production dependencies.
 COPY --from=builder /app/package.json /app/package-lock.json /app/
 RUN npm ci --only=production && rm -f package.json package-lock.json
 
