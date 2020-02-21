@@ -15,9 +15,7 @@ function sendJson(jsonObject: object, res: ServerResponse): void {
 function handleRequest(req: IncomingMessage, res: ServerResponse): void {
     sendJson(
         {
-            message: 'Hello World',
-            method: req.method,
-            url: req.url
+            message: 'Hello World'
         },
         res
     )

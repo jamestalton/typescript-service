@@ -22,7 +22,6 @@ process.on('exit', function processExit(code) {
 
 process.on('uncaughtException', err => {
     logger.error({ msg: `process uncaughtException`, error: err.message })
-    logger.debug({ msg: 'uncaughtException stack', stack: err.stack })
     void shutdown()
 })
 

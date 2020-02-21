@@ -5,8 +5,20 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Application",
             "type": "node",
-            "name": "vscode-jest-tests",
+            "request": "launch",
+            "args": ["${workspaceFolder}/src/main.ts"],
+            "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
+            "sourceMaps": true,
+            "cwd": "${workspaceRoot}",
+            "disableOptimisticBPs": true,
+            "protocol": "inspector",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Tests",
+            "type": "node",
             "request": "launch",
             "args": ["--runInBand", "--coverage", "false"],
             "cwd": "${workspaceFolder}",

@@ -8,11 +8,12 @@ const options: pino.LoggerOptions = {
     safe: false,
     useLevelLabels: true,
     base: {
+        app: process.env.APP,
+        instance: process.pid,
         region: process.env.REGION,
         version: process.env.VERSION
     },
-    level: process.env.LOG_LEVEL ? process.env.LOG_LEVEL : 'debug',
-    timestamp: false
+    level: process.env.LOG_LEVEL ? process.env.LOG_LEVEL : 'debug'
 }
 
 let stream: pino.DestinationStream
