@@ -13,9 +13,9 @@ const options: pino.LoggerOptions = {
         app: process.env.APP,
         instance: process.pid,
         region: process.env.REGION,
-        version: process.env.VERSION
+        version: process.env.VERSION,
     },
-    level: process.env.LOG_LEVEL ? process.env.LOG_LEVEL : 'debug'
+    level: process.env.LOG_LEVEL ? process.env.LOG_LEVEL : 'debug',
 }
 
 // For production we enable the use of buffer streams for performance

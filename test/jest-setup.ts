@@ -20,7 +20,7 @@ export function setupBeforeAll(): axios.AxiosInstance {
     const port = (server.address() as AddressInfo).port
     return axios.default.create({
         baseURL: `http://localhost:${port}`,
-        validateStatus: () => true
+        validateStatus: () => true,
     })
 }
 

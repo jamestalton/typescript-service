@@ -18,7 +18,7 @@ export async function shutdown(): Promise<void> {
     // because we have not closed all open handles or calls.
     // This timeout forces a shutdown after 30s
     /* istanbul ignore next */
-    setTimeout(function() {
+    setTimeout(function () {
         logger.error('shutdown timeout')
         throw new Error('shutdown timeout')
     }, 30 * 1000).unref()
@@ -31,7 +31,7 @@ export async function shutdown(): Promise<void> {
     // This means requests may still be being handled until the close finishes,
     // so do not close any needed resources such as databases until after this.
     logger.debug({ msg: 'closing server' })
-    await new Promise(resolve => server.close(resolve))
+    await new Promise((resolve) => server.close(resolve))
 
     // Shutdown any other dependencies here after the server has fully closed.
     // i.e. database connections, etc...
@@ -60,6 +60,6 @@ function handleRequest(req: IncomingMessage | Http2ServerRequest, res: ServerRes
         msg: STATUS_CODES[res.statusCode],
         status: res.statusCode,
         method: req.method,
-        url: req.url
+        url: req.url,
     })
 }

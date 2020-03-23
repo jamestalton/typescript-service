@@ -12,7 +12,7 @@ logger.info({
     NODE_ENV: `${process.env.NODE_ENV}`,
     cpus: `${Object.keys(cpus()).length}`,
     memory: `${(totalmem() / (1024 * 1024 * 1024)).toPrecision(2).toString()}GB`,
-    nodeVersion: `${process.versions.node}`
+    nodeVersion: `${process.versions.node}`,
 })
 
 process.on('exit', function processExit(code) {
@@ -23,7 +23,7 @@ process.on('exit', function processExit(code) {
     }
 })
 
-process.on('uncaughtException', err => {
+process.on('uncaughtException', (err) => {
     logger.error({ msg: `process uncaughtException`, error: err.message })
     void shutdown()
 })

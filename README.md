@@ -2,26 +2,26 @@
 
 Project template for a web service using [TypeScript](https://www.typescriptlang.org/) and [Node.js](https://nodejs.org/en/).
 
-- [Introduction](#introduction)
-- [Setup](#setup)
-  - [Prerequisites](#prerequisites)
-  - [Clone Repository](#clone-repository)
-  - [Install Dependencies](#install-dependencies)
-  - [Start the Service](#start-the-service)
-  - [Debugging the Service](#debugging-the-service)
-- [Testing](#testing)
-  - [Unit Tests](#unit-tests)
-  - [Code Linting](#code-linting)
-  - [Code Formatting](#code-formatting)
-- [Security](#security)
-  - [Dependency Auditing](#dependency-auditing)
-  - [Dependency Upgrades](#dependency-upgrades)
-- [Performance](#performance)
-  - [Stress Testing](#stress-testing)
-  - [Profiling](#profiling)
-- [DevOps Pipeline](#devops-pipeline)
-  - [Continuous Integration](#continuous-integration)
-  - [Docker Containerization](#docker-containerization)
+-   [Introduction](#introduction)
+-   [Setup](#setup)
+    -   [Prerequisites](#prerequisites)
+    -   [Clone Repository](#clone-repository)
+    -   [Install Dependencies](#install-dependencies)
+    -   [Start the Service](#start-the-service)
+    -   [Debugging the Service](#debugging-the-service)
+-   [Testing](#testing)
+    -   [Unit Tests](#unit-tests)
+    -   [Code Linting](#code-linting)
+    -   [Code Formatting](#code-formatting)
+-   [Security](#security)
+    -   [Dependency Auditing](#dependency-auditing)
+    -   [Dependency Upgrades](#dependency-upgrades)
+-   [Performance](#performance)
+    -   [Stress Testing](#stress-testing)
+    -   [Profiling](#profiling)
+-   [DevOps Pipeline](#devops-pipeline)
+    -   [Continuous Integration](#continuous-integration)
+    -   [Docker Containerization](#docker-containerization)
 
 ## Introduction
 
@@ -37,21 +37,21 @@ Node.js is a JavaScript engine made by Google is well-suited for making web serv
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/en/about/) is an asynchronous event-driven JavaScript runtime designed to build scalable network applications.
+-   [Node.js](https://nodejs.org/en/about/) is an asynchronous event-driven JavaScript runtime designed to build scalable network applications.
 
-- [Visual Studio Code]() is a code editor for building and debugging modern web and cloud applications.
+-   [Visual Studio Code]() is a code editor for building and debugging modern web and cloud applications.
 
-  [Check out the StackOverflow developer survey on most loved development environments.](https://insights.stackoverflow.com/survey/2019#development-environments-and-tools)
+    [Check out the StackOverflow developer survey on most loved development environments.](https://insights.stackoverflow.com/survey/2019#development-environments-and-tools)
 
-  Required Plugins:
+    Required Plugins:
 
-  - The **ESLint** plugin runs the linting rules in the editor.
+    -   The **ESLint** plugin runs the linting rules in the editor.
 
-  - The **Jest** plugin runs the tests in the editor.
+    -   The **Jest** plugin runs the tests in the editor.
 
-  - The **Prettier** plugin formats the code in the editor.
+    -   The **Prettier** plugin formats the code in the editor.
 
-- [Git](https://git-scm.com/) is a free and open source distributed version control system.
+-   [Git](https://git-scm.com/) is a free and open source distributed version control system.
 
 ### Clone Repository
 
@@ -75,7 +75,7 @@ npm ci
 
 The server is written in Typescript, but using [ts-node](https://github.com/TypeStrong/ts-node) we can run the code with real-time transpilation and not need a pre-compilation step.
 
-For development, the server is started with [npm start](https://docs.npmjs.com/cli/start.html) which runs the "*start*" script from the package.json.
+For development, the server is started with [npm start](https://docs.npmjs.com/cli/start.html) which runs the "_start_" script from the package.json.
 
 ```
 npm start
@@ -87,7 +87,7 @@ View the [Hello World](http://localhost:3000) in a web browser.
 
 ```json
 {
-  "message": "Hello World"
+    "message": "Hello World"
 }
 ```
 
@@ -109,26 +109,26 @@ npm test
 
 The test script is setup to run:
 
-- [Unit Tests](#unit-tests)
-- [Code Linting Rules](#code-linting)
-- [Code Formatting Checks](#code-formatting)
-- [Dependency Security Audits](#dependency-auditing)
+-   [Unit Tests](#unit-tests)
+-   [Code Linting Rules](#code-linting)
+-   [Code Formatting Checks](#code-formatting)
+-   [Dependency Security Audits](#dependency-auditing)
 
 ### Unit Tests
 
-Unit tests are run using the "*jest*" script defined in [package.json](./package.json).
+Unit tests are run using the "_jest_" script defined in [package.json](./package.json).
 
 ```
 npm run jest
 ```
 
-[Jest](https://jestjs.io/) is a JavaScript Testing Framework with a focus on simplicity. Using [ts-jest](https://github.com/kulshekhar/ts-jest), jest is configured in the "*jest*" section of [package.json](./package.json). Jest is configured to enforce 100% code coverage. This is a best practice to ensure either code is tested or explicitly marked as not tested.
+[Jest](https://jestjs.io/) is a JavaScript Testing Framework with a focus on simplicity. Using [ts-jest](https://github.com/kulshekhar/ts-jest), jest is configured in the "_jest_" section of [package.json](./package.json). Jest is configured to enforce 100% code coverage. This is a best practice to ensure either code is tested or explicitly marked as not tested.
 
 Install the [jest plugin](https://marketplace.visualstudio.com/items?itemName=Orta.vscode-jest) for Visual Studio Code which runs the tests in the editor, giving real-time feedback. The plugin also adds a debug link for debugging tests in Visual Studio Code.
 
 ### Code Linting
 
-Code linting checks are run using the "*eslint*" script defined in [package.json](./package.json).
+Code linting checks are run using the "_eslint_" script defined in [package.json](./package.json).
 
 ```
 npm run eslint
@@ -140,7 +140,7 @@ Install the [ESLint plugin](https://marketplace.visualstudio.com/items?itemName=
 
 ### Code Formatting
 
-Code formatting checks are run using the "*prettier*" script defined in [package.json](./package.json).
+Code formatting checks are run using the "_prettier_" script defined in [package.json](./package.json).
 
 ```
 npm run prettier
@@ -149,7 +149,6 @@ npm run prettier
 The code formatting is enforced using [Prettier](https://prettier.io/) - an opinionated code formatter.
 
 > By far the biggest reason for adopting Prettier is to stop all the on-going debates over styles. It is generally accepted that having a common style guide is valuable for a project and team but getting there is a very painful and unrewarding process. People get very emotional around particular ways of writing code and nobody likes spending time writing and receiving nits.
-> 
 
 Prettier is configured in the prettier section of the [package.json](./package.json).
 
@@ -167,7 +166,7 @@ npm audit
 
 ### Dependency Upgrades
 
-Dependency upgrades can be run using the "*update*" script defined in [package.json](./package.json).
+Dependency upgrades can be run using the "_update_" script defined in [package.json](./package.json).
 
 ```
 npm run update
@@ -179,7 +178,7 @@ This will update dependencies, run audits, and run tests.
 
 ### Stress Testing
 
-Stress testing can be run using the "*stress*" script defined in [package.json](./package.json). You must first start the service before running the stress test.
+Stress testing can be run using the "_stress_" script defined in [package.json](./package.json). You must first start the service before running the stress test.
 
 ```
 npm run stress
@@ -190,7 +189,7 @@ The hardware the test runs on affects the performance. Running on a 2019 MacBook
 ### Profiling
 
 Profiling the service can show where the bottlenecks are in performance.
-Profiling can be run using the "*profile*" script defined in [package.json](./package.json).
+Profiling can be run using the "_profile_" script defined in [package.json](./package.json).
 Once the profiling is done, a flame graph of the results will be generated and opened in a web browser.
 
 ```
@@ -214,13 +213,13 @@ Docker can build images automatically by reading the instructions from a Dockerf
 
 This project contains a [Dockerfile](./Dockerfile) that builds off the public [DockerHub official node](https://hub.docker.com/_/node/) docker image to create a docker image for this application.
 
-The docker image is built using the "*docker:build*" script defined in [package.json](./package.json).
+The docker image is built using the "_docker:build_" script defined in [package.json](./package.json).
 
 ```
 npm run docker:build
 ```
 
-The docker container is run using the "*docker:run*" script defined in [package.json](./package.json).
+The docker container is run using the "_docker:run_" script defined in [package.json](./package.json).
 
 ```
 npm run docker:run
