@@ -31,8 +31,8 @@
     "devDependencies": {
         "@types/jest": "^25.x.x",
         "@types/node": "^13.x.x",
-        "@typescript-eslint/eslint-plugin": "^2.31.0",
-        "@typescript-eslint/parser": "^2.31.0",
+        "@typescript-eslint/eslint-plugin": "^2.32.0",
+        "@typescript-eslint/parser": "^2.32.0",
         "autocannon": "^4.6.0",
         "axios": "^0.19.2",
         "eslint": "^7.0.0",
