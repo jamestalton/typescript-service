@@ -25,14 +25,14 @@
         "docker:stop": "docker rm -f app"
     },
     "dependencies": {
-        "@types/pino": "^6.0.0",
+        "@types/pino": "^6.0.1",
         "pino": "^6.2.1"
     },
     "devDependencies": {
         "@types/jest": "^25.x.x",
-        "@types/node": "^13.x.x",
-        "@typescript-eslint/eslint-plugin": "^2.32.0",
-        "@typescript-eslint/parser": "^2.32.0",
+        "@types/node": "^14.x.x",
+        "@typescript-eslint/eslint-plugin": "^2.33.0",
+        "@typescript-eslint/parser": "^2.33.0",
         "autocannon": "^4.6.0",
         "axios": "^0.19.2",
         "eslint": "^7.0.0",
@@ -46,7 +46,7 @@
         "ts-jest": "^25.x.x",
         "ts-node": "^8.10.1",
         "ts-node-dev": "^1.0.0-pre.44",
-        "typescript": "^3.8.3"
+        "typescript": "^3.9.2"
     },
     "prettier": {
         "printWidth": 120,
