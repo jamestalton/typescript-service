@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "target": "ESNext",
+        "target": "ES2019",
         "module": "commonjs",
         "allowJs": false,
         "sourceMap": true,
@@ -14,7 +14,11 @@
         "outDir": "./lib",
         "noImplicitUseStrict": true,
         "removeComments": true,
-        "lib": ["esnext"]
+        "lib": [
+            "ES2019"
+        ]
     },
-    "include": ["src/**/*.ts"]
+    "include": [
+        "src/**/*.ts"
+    ]
 }

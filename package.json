@@ -20,22 +20,22 @@
         "stress": "autocannon -c 100 -d 40 -p 10 localhost:3000/ping",
         "profile": "rm -rf isolate*.log && NODE_ENV=production PORT=3000 node -r ts-node/register --prof src/main.ts && node --prof-process --preprocess -j isolate*.log | flamebearer && rm -rf isolate*.log",
         "docker:build": "docker build --pull -t app .",
-        "docker:run": "npm run docker:build && docker run --rm -t --name app -p 3000:3000 -e PORT=3000 app",
+        "docker:run": "npm run docker:build && docker run --rm -t --name app -p 3000:3000 -e PORT=3000 app | ./node_modules/.bin/pino-pretty -i time,instance",
         "docker:start": "npm run docker:build && docker run -d --name app -p 3000:3000 -e PORT=3000 app",
         "docker:stop": "docker rm -f app"
     },
     "dependencies": {
         "@types/pino": "^6.0.1",
-        "pino": "^6.2.1"
+        "pino": "^6.3.1"
     },
     "devDependencies": {
         "@types/jest": "^25.x.x",
         "@types/node": "^14.x.x",
-        "@typescript-eslint/eslint-plugin": "^2.34.0",
-        "@typescript-eslint/parser": "^2.34.0",
+        "@typescript-eslint/eslint-plugin": "^3.1.0",
+        "@typescript-eslint/parser": "^3.1.0",
         "autocannon": "^4.6.0",
         "axios": "^0.19.2",
-        "eslint": "^7.0.0",
+        "eslint": "^7.1.0",
         "eslint-config-prettier": "^6.11.0",
         "eslint-plugin-prettier": "^3.1.3",
         "flamebearer": "^1.1.3",
@@ -44,7 +44,7 @@
         "pino-pretty": "^4.0.0",
         "prettier": "^2.0.5",
         "ts-jest": "^26.x.x",
-        "ts-node": "^8.10.1",
+        "ts-node": "^8.10.2",
         "ts-node-dev": "^1.0.0-pre.44",
         "typescript": "^3.9.3"
     },
@@ -111,12 +111,6 @@
         "rules": {
             "@typescript-eslint/no-use-before-define": "off",
             "@typescript-eslint/no-unused-vars": "off",
-            "@typescript-eslint/interface-name-prefix": [
-                "error",
-                {
-                    "prefixWithI": "always"
-                }
-            ],
             "@typescript-eslint/no-floating-promises": [
                 "error",
                 {

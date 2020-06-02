@@ -8,7 +8,6 @@ import * as pino from 'pino'
 
 const options: pino.LoggerOptions = {
     safe: false,
-    useLevelLabels: true,
     base: {
         app: process.env.APP,
         instance: process.pid,
@@ -16,13 +15,18 @@ const options: pino.LoggerOptions = {
         version: process.env.VERSION,
     },
     level: process.env.LOG_LEVEL ? process.env.LOG_LEVEL : 'debug',
+    formatters: {
+        level(label: string, number: number) {
+            return { level: label }
+        },
+    },
 }
 
 // For production we enable the use of buffer streams for performance
 let stream: pino.DestinationStream
 let timeout: NodeJS.Timeout
 if (process.env.NODE_ENV === 'production') {
-    stream = pino.extreme()
+    stream = pino.destination({ sync: false })
     timeout = setInterval(function loggerFlush() {
         logger.flush()
     }, 5 * 1000)
