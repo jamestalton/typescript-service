@@ -1,5 +1,7 @@
 # Typescript Service Template
 
+[![Build Status](https://travis-ci.com/jamestalton/typescript-service.svg?branch=master)](https://travis-ci.com/jamestalton/typescript-service)
+
 Project template for a web service using [TypeScript](https://www.typescriptlang.org/) and [Node.js](https://nodejs.org/en/).
 
 -   [Introduction](#introduction)
