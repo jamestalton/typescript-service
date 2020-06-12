@@ -1,0 +1,15 @@
+FROM node:12
+RUN apt-get update && apt-get install -y \
+  jq
+RUN curl -sLO https://github.com/github/hub/releases/download/v2.14.2/hub-linux-amd64-2.14.2.tgz && \
+    tar -xzf "hub-linux-amd64-2.14.2.tgz" && \
+    ./hub-linux-amd64-2.14.2/install && \
+    rm -rf ./hub-linux-amd64-2.14.2 && \
+    rm -f hub-linux-amd64-2.14.2.tgz && \
+    hub version
+COPY npm-dependency-updater.sh .
+WORKDIR /app
+CMD ["/npm-dependency-updater.sh"]
+
+# docker build --tag npm-dependency-updater --file Dockerfile.updater .
+# docker run --rm -v $PWD:/app -e GITHUB_TOKEN=$GITHUB_TOKEN -e GIT_USER=TravisCI -e GIT_EMAIL=travis@travis-ci.org -e GITHUB_ORG=jamestalton npm-dependency-updater
