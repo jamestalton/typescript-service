@@ -13,12 +13,20 @@ jobs:
           if: type = push AND branch = master
           script:
               docker build --pull --tag typescript-service .
+              # echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
               # - docker push app
 
-        # - stage: Deploy
-        #   if: type = push AND branch = master
-        #   script:
-        #       - echo Deploy here
+        - stage: Deploy
+          language: go
+          before_script:
+              - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl && chmod +x kubectl && sudo mv kubectl /usr/local/bin/
+              - GO111MODULE=on go get sigs.k8s.io/kind
+              - kind create cluster
+              - kubectl cluster-info --context kind-kind
+          script:
+              - kubectl get all
+          after_script:
+              - kubectl delete cluster
 
         - stage: Dependency Updates
           if: type = cron AND branch = master
