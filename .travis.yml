@@ -12,8 +12,8 @@ jobs:
         - stage: Build, Test, and Push
           if: type = push AND branch = master
           script:
-              docker build --pull --tag typescript-service .
-              echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+              - docker build --pull --tag typescript-service .
+              - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
               # - docker push app
 
         - stage: Deploy
@@ -35,3 +35,10 @@ jobs:
           script:
               - docker build --tag npm-dependency-updater --file Dockerfile.updater .
               - docker run --rm -v $PWD:/app -e GITHUB_TOKEN=$GH_TOKEN -e GITHUB_ORG=jamestalton -e CREATE_PR=true npm-dependency-updater
+
+notifications:
+    email:
+        recipients:
+            - talton@gmail.com
+        on_success: never
+        on_failure: always
