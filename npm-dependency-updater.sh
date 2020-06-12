@@ -50,7 +50,7 @@ if [ -z "$GIT_USER" ]; then
 fi
 
 if [ -z "$GIT_EMAIL" ]; then
-    GIT_USER="npm.dependency.updater@example.com"
+    GIT_EMAIL="npm.dependency.updater@example.com"
 fi
 
 if [ -z "$GIT_BRANCH" ]; then
@@ -61,8 +61,8 @@ if [ -z "$UPDATE_COMMAND" ]; then
     UPDATE_COMMAND="rm -rf package-lock.json node_modules && npx npm-check-updates -u && npm install && npm audit fix && npm test"
 fi
 
-git config --global user.name "$GIT_USER"
-git config --global user.email "$GIT_EMAIL"
+git config user.name "$GIT_USER"
+git config user.email "$GIT_EMAIL"
 
 git remote remove origin
 git remote add origin https://$GITHUB_TOKEN@$GITHUB_HOST/$GITHUB_ORG/$GIT_REPO.git > /dev/null 2>&1
