@@ -13,4 +13,6 @@ jobs:
         steps:
             - uses: actions/checkout@v2
 
-            - run: docker build --tag docker.pkg.github.com/jamestalton/typescript-service/typescript-service .
+            - run: docker build .
+
+            - run: cat package.json | jq -r .version
