@@ -81,9 +81,9 @@ if [ "$CREATE_PR" = "true" ]; then
         git branch -D "$GIT_BRANCH-dependency-updates" > /dev/null 2>&1 || true
     fi
 
-    set -e
-    git checkout -b $GIT_BRANCH-dependency-updates --track origin/$GIT_BRANCH-dependency-updates > /dev/null 2>&1
     set +e
+    git checkout -b $GIT_BRANCH-dependency-updates --track origin/$GIT_BRANCH-dependency-updates > /dev/null 2>&1
+    set -e
 
     RESULT=$?
     if [ ! -z $RESULT ]; then
