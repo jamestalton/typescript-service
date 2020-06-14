@@ -21,3 +21,11 @@ jobs:
               run: echo ${GITHUB_TOKEN} | docker login -u ${GITHUB_ACTOR} --password-stdin docker.pkg.github.com
 
             - run: docker push docker.pkg.github.com/jamestalton/typescript-service/typescript-service:latest
+
+            - name: Get the TAG
+              id: get_tag
+              run: echo ::set-output name=TAG::${GITHUB_REF/refs\/tags\//}
+
+            - name: TAG
+              env:
+                  TAG: ${{ steps.get_tag.outputs.TAG }}
