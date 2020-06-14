@@ -12,9 +12,9 @@ jobs:
         - stage: Build, Test, and Push
           if: type = push AND branch = master
           script:
-              - docker build --pull --tag typescript-service .
+              - docker build --pull --tag jtalton/typescript-service:latest .
               - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-              # - docker push app
+              - docker push jtalton/typescript-service:latest
 
         - stage: Deploy
           if: type = push AND branch = master

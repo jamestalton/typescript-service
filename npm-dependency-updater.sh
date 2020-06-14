@@ -66,6 +66,8 @@ git config user.email "$GIT_EMAIL"
 
 git remote remove origin
 git remote add origin https://$GITHUB_TOKEN@$GITHUB_HOST/$GITHUB_ORG/$GIT_REPO.git > /dev/null 2>&1
+git fetch
+git pull origin $GIT_BRANCH
 
 if [ "$CREATE_PR" = "true" ]; then
     if [ -z "$(which hub)" ]; then
