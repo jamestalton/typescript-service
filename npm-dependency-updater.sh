@@ -76,17 +76,20 @@ if [ "$CREATE_PR" = "true" ]; then
     fi
 
     echo "Hub CLI version: " `$(hub version)`
+
     EXISTING_PR=`hub pr list --head $GIT_BRANCH-dependency-updates`
     if [ -z "$EXISTING_PR" ]; then
-        git branch -D "$GIT_BRANCH-dependency-updates" > /dev/null 2>&1 || true
+        echo "Deleting existing branch it is exists"
+        git branch -D "$GIT_BRANCH-dependency-updates" || true
     fi
 
     set +e
-    git checkout -b $GIT_BRANCH-dependency-updates --track origin/$GIT_BRANCH-dependency-updates > /dev/null 2>&1
+    echo "Checkout existing branch it is exists"
+    git checkout -b $GIT_BRANCH-dependency-updates --track origin/$GIT_BRANCH-dependency-updates
+    RESULT=$?
     set -e
 
-    RESULT=$?
-    if [ ! -z $RESULT ]; then
+    if [ $RESULT -ne 0 ]; then
         git checkout -b "$GIT_BRANCH-dependency-updates"
     fi
 else
