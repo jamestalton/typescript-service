@@ -66,7 +66,7 @@ git config user.email "$GIT_EMAIL"
 
 git remote remove origin
 git remote add origin https://$GITHUB_TOKEN@$GITHUB_HOST/$GITHUB_ORG/$GIT_REPO.git > /dev/null 2>&1
-git fetch
+git fetch origin
 
 if [ "$CREATE_PR" = "true" ]; then
     if [ -z "$(which hub)" ]; then
@@ -78,13 +78,19 @@ if [ "$CREATE_PR" = "true" ]; then
     echo "Hub CLI version: " `$(hub version)`
     EXISTING_PR=`hub pr list --head $GIT_BRANCH-dependency-updates`
     if [ -z "$EXISTING_PR" ]; then
-        git branch -D "$GIT_BRANCH-dependency-updates" || true
+        git branch -D "$GIT_BRANCH-dependency-updates" > /dev/null 2>&1 || true
     fi
-    git checkout -b "$GIT_BRANCH-dependency-updates"
-    git pull origin "$GIT_BRANCH-dependency-updates"
+
+    set -e
+    git checkout -b $GIT_BRANCH-dependency-updates --track origin/$GIT_BRANCH-dependency-updates > /dev/null 2>&1
+    set +e
+
+    RESULT=$?
+    if [ ! -z $RESULT ]; then
+        git checkout -b "$GIT_BRANCH-dependency-updates"
+    fi
 else
-    git checkout $GIT_BRANCH
-    git pull origin $GIT_BRANCH
+    git checkout "$GIT_BRANCH"
 fi
 
 echo "Updating dependencies"
