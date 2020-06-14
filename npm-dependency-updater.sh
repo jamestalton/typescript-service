@@ -78,10 +78,11 @@ if [ "$CREATE_PR" = "true" ]; then
 
     echo "Hub CLI version: " `$(hub version)`
     EXISTING_PR=`hub pr list --head $GIT_BRANCH-dependency-updates`
-    if [ ! -z "$EXISTING_PR" ]; then
+    if [ -z "$EXISTING_PR" ]; then
         git branch -D "$GIT_BRANCH-dependency-updates"
     fi
     git checkout -b "$GIT_BRANCH-dependency-updates"
+    git pull origin "$GIT_BRANCH-dependency-updates"
 else
     git checkout $GIT_BRANCH
 fi
