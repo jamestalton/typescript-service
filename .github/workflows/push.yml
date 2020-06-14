@@ -15,7 +15,9 @@ jobs:
 
             - name: Patch Version
               run: |
-                  docker run --rm -v $PWD:/app node bash -c "cd /app && npm version patch"
+                  curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+                  sudo apt-get install -y nodejs
+                  npm version patch
                   VERSION=`cat package.json | jq -r .version`
                   echo $VERSION
                   echo '::set-env name=VERSION::$VERSION'
