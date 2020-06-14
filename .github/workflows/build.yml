@@ -11,8 +11,15 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-            - name: Checkout
-              uses: actions/checkout@v2
+            - uses: actions/checkout@v2
+
+            - name: Docker Login
+              run: echo ${GITHUB_TOKEN} | docker login -u ${GITHUB_ACTOR} --password-stdin docker.pkg.github.com
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Docker Build
+              run: docker build --tag jamestalton/typescript-service .
 
             - name: Build and push Docker images
               uses: docker/build-push-action@v1.1.0
