@@ -20,6 +20,6 @@ jobs:
                   username: jtalton
                   password: ${{ secrets.GITHUB_TOKEN }}
                   registry: https://docker.pkg.github.com
-                  repository: $GITHUB_REPOSITORY
+                  repository: jamestalton/typescript-service
                   tag_with_ref: true
                   push: ${{ startsWith(github.ref, 'refs/tags/') }}
