@@ -111,7 +111,7 @@ if [ "$CREATE_PR" = "true" ]; then
     git push origin "$GIT_BRANCH-dependency-updates"
     if [ -z "$EXISTING_PR" ]; then
         echo "Creating pull request: $GIT_BRANCH-dependency-updates"
-        hub pull-request -b "$GIT_BRANCH-dependency-updates" -h "$GIT_BRANCH-dependency-updates" -m "Dependency updates"
+        hub pull-request -m "Dependency updates"
     fi
 else
     echo "Pushing branch: $GIT_BRANCH"
