@@ -25,7 +25,7 @@
         "docker:stop": "docker rm -f app"
     },
     "dependencies": {
-        "@types/pino": "^6.0.0",
+        "@types/pino": "^6.3.0",
         "pino": "^6.3.2"
     },
     "devDependencies": {
@@ -45,7 +45,7 @@
         "prettier": "^2.0.5",
         "ts-jest": "^26.x.x",
         "ts-node": "^8.10.2",
-        "ts-node-dev": "^1.0.0-pre.44",
+        "ts-node-dev": "^1.0.0-pre.47",
         "typescript": "^3.9.5"
     },
     "prettier": {
