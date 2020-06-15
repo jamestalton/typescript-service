@@ -11,16 +11,19 @@ jobs:
         steps:
             - uses: actions/checkout@v2
 
-            - run: docker build --tag docker.pkg.github.com/jamestalton/typescript-service/typescript-service:latest .
-
-            - name: Patch Version
+            - name: Update Version
               run: |
                   curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
                   sudo apt-get install -y nodejs
                   git config --global user.name "${GITHUB_ACTOR}"
                   git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
                   npm version patch
-                  git push
+
+            - name: Docker Build
+              run: docker build --tag docker.pkg.github.com/jamestalton/typescript-service/typescript-service:latest .
+
+            - name: Push Versioning
+              run: git push
 
             - name: Docker Push
               run: |
