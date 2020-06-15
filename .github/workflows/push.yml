@@ -20,14 +20,12 @@ jobs:
                   git config --global user.name '${GITHUB_ACTOR}'
                   git config --global user.email '${GITHUB_ACTOR}@users.noreply.github.com'
                   npm version patch
-                  VERSION=`cat package.json | jq -r .version`
-                  echo $VERSION
-                  echo '::set-env name=VERSION::$VERSION'
+                  git push
 
-            - run: echo $VERSION
-
-            - name: Docker Login
-              run: echo ${{ secrets.GITHUB_TOKEN }} | docker login -u ${GITHUB_ACTOR} --password-stdin docker.pkg.github.com
-            - run: docker tag docker.pkg.github.com/jamestalton/typescript-service/typescript-service:latest docker.pkg.github.com/jamestalton/typescript-service/typescript-service:$VERSION
-            - run: docker push docker.pkg.github.com/jamestalton/typescript-service/typescript-service:$VERSION
-            - run: docker push docker.pkg.github.com/jamestalton/typescript-service/typescript-service:latest
+            - name: Docker Push
+              run: |
+                  echo ${{ secrets.GITHUB_TOKEN }} | docker login -u ${GITHUB_ACTOR} --password-stdin docker.pkg.github.com
+                  docker push docker.pkg.github.com/jamestalton/typescript-service/typescript-service:latest
+                  VERSION=v`cat package.json | jq -r .version`
+                  docker tag docker.pkg.github.com/jamestalton/typescript-service/typescript-service:latest docker.pkg.github.com/jamestalton/typescript-service/typescript-service:$VERSION
+                  docker push docker.pkg.github.com/jamestalton/typescript-service/typescript-service:$VERSION
