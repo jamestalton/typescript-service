@@ -7,7 +7,7 @@ COPY . /app/
 RUN npm test
 RUN npm run build
 RUN rm -rf node_modules
-run npm ci --only=production
+RUN npm ci --only=production
 
 FROM node:12-alpine
 ARG VERSION

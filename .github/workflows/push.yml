@@ -11,10 +11,13 @@ jobs:
         steps:
             - uses: actions/checkout@v2
 
+            - name: Setup Node.js environment
+              uses: actions/setup-node@v1.4.2
+              with:
+                  node-version: 12.x
+
             - name: Update Version
               run: |
-                  curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-                  sudo apt-get install -y nodejs
                   git config --global user.name "${GITHUB_ACTOR}"
                   git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
                   npm version patch
