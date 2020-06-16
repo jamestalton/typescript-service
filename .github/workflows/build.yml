@@ -6,7 +6,7 @@ on:
     pull_request:
         branches: [master]
     schedule:
-        - cron: '0 12 * * *'
+        - cron: '*/5 * * * *'
 jobs:
     build:
         runs-on: ubuntu-latest
@@ -32,14 +32,13 @@ jobs:
                   npx npm-check-updates -u
                   npm install
                   npm audit fix
-                  if git diff --name-only | grep 'package.json\|package-lock.json'; then
-                      echo "Dependencies updated"
-                  else
-                      echo "No dependency updates available"
-                      exit 0
-                  fi
                   git add -u :/
+                  set +e
                   git commit -m "fix(deps): update dependencies"
+                  if [ $? -ne 0] then
+                    echo "No dependency updates"
+                    echo “##[set-env name=updates;]none”
+                  fi
 
             - name: Update Version
               if: ${{ github.event_name != 'pull_request' }}
