@@ -21,20 +21,20 @@ jobs:
                   node-version: 12.x
 
             - name: Update Dependencies
-            if: ${{ github.event_name == 'schedule' }}
-            run: |
-                rm -rf package-lock.json node_modules
-                npx npm-check-updates -u
-                npm install
-                npm audit fix
-                git add -u :/
-                git commit -m "fix(deps): update dependencies"
-                if git diff --name-only | grep 'package.json\|package-lock.json'; then
-                    echo "Dependencies updated"
-                else
-                    echo "No dependency updates available"
-                    exit 0
-                fi
+              if: ${{ github.event_name == 'schedule' }}
+              run: |
+                  rm -rf package-lock.json node_modules
+                  npx npm-check-updates -u
+                  npm install
+                  npm audit fix
+                  git add -u :/
+                  git commit -m "fix(deps): update dependencies"
+                  if git diff --name-only | grep 'package.json\|package-lock.json'; then
+                      echo "Dependencies updated"
+                  else
+                      echo "No dependency updates available"
+                      exit 0
+                  fi
 
             - name: Update Version
               if: ${{ github.event_name != 'pull_request' }}
