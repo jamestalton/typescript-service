@@ -34,29 +34,29 @@ jobs:
                   npm audit fix
                   git add -u :/
                   set +e
-                  UPDATE=$(git commit -m "update dependencies")
-                  echo "::set-env name=UPDATE::$UPDATE"
+                  EXIT=$(git commit -m "update dependencies")
+                  echo ::set-env name=EXIT::$EXIT
 
             - name: Update Version
-              if: ${{ github.event_name != 'pull_request' && $UPDATE != 1 }}
+              if: ${{ github.event_name != 'pull_request' && $EXIT != 1 }}
               run: |
                   npm version patch
 
             - name: Docker Build
-              if: ${{ github.event_name != 'pull_request' && $UPDATE != 1 }}
+              if: ${{ github.event_name != 'pull_request' && $EXIT != 1 }}
               run: |
                   VERSION=v`cat package.json | jq -r .version`
                   docker build --build-arg VERSION --tag docker.pkg.github.com/jamestalton/typescript-service/typescript-service:latest .
 
             - name: Git Push
-              if: ${{ github.event_name != 'pull_request' && $UPDATE != 1 }}
+              if: ${{ github.event_name != 'pull_request' && $EXIT != 1 }}
               run: |
                   VERSION=v`cat package.json | jq -r .version`
                   git push
                   git push origin $VERSION
 
             - name: Docker Push
-              if: ${{ github.event_name != 'pull_request' && $UPDATE != 1 }}
+              if: ${{ github.event_name != 'pull_request' && $EXIT != 1 }}
               run: |
                   echo ${{ secrets.GITHUB_TOKEN }} | docker login -u "${GITHUB_ACTOR}" --password-stdin docker.pkg.github.com
                   docker push docker.pkg.github.com/jamestalton/typescript-service/typescript-service:latest
