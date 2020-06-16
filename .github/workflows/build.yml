@@ -32,14 +32,14 @@ jobs:
                   npx npm-check-updates -u
                   npm install
                   npm audit fix
-                  git add -u :/
-                  git commit -m "fix(deps): update dependencies"
                   if git diff --name-only | grep 'package.json\|package-lock.json'; then
                       echo "Dependencies updated"
                   else
                       echo "No dependency updates available"
                       exit 0
                   fi
+                  git add -u :/
+                  git commit -m "fix(deps): update dependencies"
 
             - name: Update Version
               if: ${{ github.event_name != 'pull_request' }}
