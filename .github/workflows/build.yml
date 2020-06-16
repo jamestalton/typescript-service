@@ -35,7 +35,8 @@ jobs:
                   npm audit fix
                   git add -u :/
                   set +e
-                  EXIT=$(git commit -m "update dependencies")
+                  git commit -m "update dependencies"
+                  EXIT=$?
                   echo "::set-env name=EXIT::${EXIT}"
 
             - name: Update Version
