@@ -5,6 +5,8 @@ COPY package.json package-lock.json /app/
 RUN npm ci
 COPY . /app/
 RUN npm test
+RUN npm run lint
+RUN npm run check
 RUN npm run build
 RUN rm -rf node_modules
 RUN npm ci --only=production
@@ -12,9 +14,7 @@ RUN npm ci --only=production
 FROM node:12-alpine
 ARG VERSION
 ENV NODE_ENV production
-ENV PORT 3000
 ENV VERSION $VERSION
-EXPOSE 3000
 WORKDIR /app
 COPY --from=builder /app/node_modules /app/node_modules
 COPY --from=builder /app/lib /app/

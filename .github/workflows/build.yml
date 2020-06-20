@@ -48,7 +48,8 @@ jobs:
               if: github.event_name != 'pull_request' && env.EXIT != '1'
               run: |
                   VERSION=v`cat package.json | jq -r .version`
-                  docker build --build-arg VERSION --tag docker.pkg.github.com/jamestalton/typescript-service/typescript-service:latest .
+                  IMAGE=v`cat package.json | jq -r .name`
+                  docker build --build-arg VERSION --tag docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:latest .
 
             - name: Git Push
               if: github.event_name != 'pull_request' && env.EXIT != '1'
@@ -60,8 +61,9 @@ jobs:
             - name: Docker Push
               if: github.event_name != 'pull_request' && env.EXIT != '1'
               run: |
-                  echo ${{ secrets.GITHUB_TOKEN }} | docker login -u "${GITHUB_ACTOR}" --password-stdin docker.pkg.github.com
-                  docker push docker.pkg.github.com/jamestalton/typescript-service/typescript-service:latest
                   VERSION=v`cat package.json | jq -r .version`
-                  docker tag docker.pkg.github.com/jamestalton/typescript-service/typescript-service:latest docker.pkg.github.com/jamestalton/typescript-service/typescript-service:$VERSION
-                  docker push docker.pkg.github.com/jamestalton/typescript-service/typescript-service:$VERSION
+                  IMAGE=v`cat package.json | jq -r .name`
+                  echo ${{ secrets.GITHUB_TOKEN }} | docker login -u "${GITHUB_ACTOR}" --password-stdin docker.pkg.github.com
+                  docker push docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:latest
+                  docker tag docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:latest docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:$VERSION
+                  docker push docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:$VERSION

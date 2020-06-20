@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Application",
+            "name": "Debug",
             "type": "node",
             "request": "launch",
             "args": ["${workspaceFolder}/src/main.ts"],
@@ -17,7 +17,7 @@
             "console": "integratedTerminal"
         },
         {
-            "name": "Tests",
+            "name": "vscode-jest-tests",
             "type": "node",
             "request": "launch",
             "args": ["--runInBand", "--coverage", "false"],
