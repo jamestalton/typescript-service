@@ -4,7 +4,7 @@ process.env.LOG_LEVEL = 'silent'
 import * as axios from 'axios'
 import { AddressInfo } from 'net'
 import * as nock from 'nock'
-import { start, shutdown } from '../src/app'
+import { startServer, stopServer } from '../src/server'
 import { Server } from 'http'
 import { Http2Server, Http2SecureServer } from 'http2'
 
@@ -15,7 +15,7 @@ export function setupBeforeAll(): axios.AxiosInstance {
     nock.enableNetConnect('127.0.0.1')
     nock.enableNetConnect('localhost')
 
-    server = start()
+    server = startServer()
 
     const port = (server.address() as AddressInfo).port
     return axios.default.create({
@@ -25,7 +25,7 @@ export function setupBeforeAll(): axios.AxiosInstance {
 }
 
 export async function setupAfterAll(): Promise<void> {
-    await shutdown()
+    await stopServer()
     nock.enableNetConnect()
     nock.restore()
 }

@@ -6,7 +6,7 @@ Project template for a web service using [TypeScript](https://www.typescriptlang
 
 ## Prerequisites
 
--   [Node.js](https://nodejs.org) Version 12.x
+-   [Node.js](https://nodejs.org) Version 14.x
 
 ## Install dependencies
 
