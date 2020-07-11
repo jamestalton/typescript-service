@@ -34,7 +34,7 @@
         "eslint-plugin-prettier": "^3.1.4",
         "jest": "^26.x.x",
         "nock": "^13.0.2",
-        "pino-pretty": "^4.0.0",
+        "pino-pretty": "^4.0.1",
         "prettier": "^2.0.5",
         "ts-jest": "^26.x.x",
         "ts-node": "^8.10.2",
