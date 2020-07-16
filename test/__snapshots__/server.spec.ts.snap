@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Service Routes GET / returns status 200 and hello world 1`] = `
+Object {
+  "message": "Hello World",
+}
+`;

@@ -49,9 +49,6 @@
     },
     "jest": {
         "testEnvironment": "node",
-        "transform": {
-            "^.+\\.tsx?$": "ts-jest"
-        },
         "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
         "collectCoverage": true,
         "coverageThreshold": {
@@ -72,16 +69,18 @@
             "!<rootDir>/src/typings.d.ts"
         ],
         "moduleFileExtensions": [
-            "ts",
-            "tsx",
             "js",
-            "jsx",
             "json",
-            "node"
+            "jsx",
+            "node",
+            "ts",
+            "tsx"
         ],
         "setupFiles": [
             "<rootDir>/test/jest-setup.ts"
-        ]
+        ],
+        "preset": "ts-jest",
+        "testMatch": null
     },
     "eslintConfig": {
         "parser": "@typescript-eslint/parser",
