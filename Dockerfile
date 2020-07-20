@@ -9,12 +9,11 @@ RUN rm -rf node_modules
 RUN npm ci --only=production
 
 FROM --platform=${TARGETPLATFORM:-linux/amd64} node:12-alpine
+USER node
 ENV NODE_ENV production
 WORKDIR /app
 COPY --from=builder /app/node_modules /app/node_modules
 COPY --from=builder /app/lib /app/
 ARG VERSION
 ENV VERSION $VERSION
-ENV NODE_ENV production
-USER node
 CMD ["node", "main.js"]
