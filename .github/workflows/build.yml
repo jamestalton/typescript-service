@@ -6,7 +6,7 @@ on:
     pull_request:
         branches: [master]
     schedule:
-        - cron: "0 16 * * *"
+        - cron: '0 16 * * *'
 jobs:
     build:
         runs-on: ubuntu-latest
@@ -44,6 +44,13 @@ jobs:
               run: |
                   npm version patch
 
+            - name: NPM Test
+              run: |
+                  npm ci
+                  npm test
+                  npm run lint
+                  npm run check
+
             - name: Set up Docker Buildx
               uses: crazy-max/ghaction-docker-buildx@v3
 
@@ -52,6 +59,7 @@ jobs:
               run: |
                   VERSION=v`cat package.json | jq -r .version`
                   IMAGE=`cat package.json | jq -r .name`
+                  echo ${{ secrets.GITHUB_TOKEN }} | docker login -u "${GITHUB_ACTOR}" --password-stdin docker.pkg.github.com
                   docker buildx build \
                   --platform linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x \
                   --output "type=image,push=true" \
@@ -66,13 +74,6 @@ jobs:
             #       VERSION=v`cat package.json | jq -r .version`
             #       IMAGE=`cat package.json | jq -r .name`
             #       docker build --build-arg VERSION --tag docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:latest .
-
-            - name: NPM Test
-              run: |
-                  npm ci
-                  npm test
-                  npm run lint
-                  npm run check
 
             - name: Git Push
               if: github.event_name != 'pull_request' && env.EXIT != '1'
