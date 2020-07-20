@@ -1,4 +1,4 @@
-FROM node:12-alpine as builder
+FROM --platform=${BUILDPLATFORM:-linux/amd64} node:12-alpine as builder
 RUN apk add --no-cache python make g++
 WORKDIR /app
 COPY package.json package-lock.json /app/
@@ -11,7 +11,7 @@ RUN npm run build
 RUN rm -rf node_modules
 RUN npm ci --only=production
 
-FROM node:12-alpine
+FROM --platform=${TARGETPLATFORM:-linux/amd64} node:12-alpine
 ARG VERSION
 ENV NODE_ENV production
 ENV VERSION $VERSION
