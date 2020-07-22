@@ -21,7 +21,7 @@
     },
     "dependencies": {
         "@types/pino": "^6.3.0",
-        "pino": "^6.4.0"
+        "pino": "^6.4.1"
     },
     "devDependencies": {
         "@types/jest": "^26.x.x",
