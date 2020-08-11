@@ -85,12 +85,12 @@ jobs:
             # - name: CodeQL Analysis
             #   uses: github/codeql-action/analyze@v1
 
+            - uses: azure/container-scan@v0
+              with:
+                  image-name: docker.pkg.github.com/${{GITHUB_REPOSITORY}}/${{IMAGE}}:latest
+
             - name: Scan image
               uses: anchore/scan-action@v1
               with:
-                  image-reference: docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:latest
+                  image-reference: docker.pkg.github.com/${{GITHUB_REPOSITORY}}/${{IMAGE}}:latest
                   fail-build: true
-
-            - uses: azure/container-scan@v0
-              with:
-                  image-name: docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:latest
