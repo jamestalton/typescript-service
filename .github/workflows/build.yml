@@ -87,10 +87,10 @@ jobs:
 
             - uses: azure/container-scan@v0
               with:
-                  image-name: docker.pkg.github.com/${{GITHUB_REPOSITORY}}/${{IMAGE}}:latest
+                  image-name: docker.pkg.github.com/jamestalton/typescript-service:latest
 
             - name: Scan image
               uses: anchore/scan-action@v1
               with:
-                  image-reference: docker.pkg.github.com/${{GITHUB_REPOSITORY}}/${{IMAGE}}:latest
+                  image-reference: docker.pkg.github.com/jamestalton/typescript-service:latest
                   fail-build: true
