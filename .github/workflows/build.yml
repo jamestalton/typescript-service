@@ -48,11 +48,6 @@ jobs:
                   echo "::set-env name=VERSION::${VERSION}"
                   echo "::set-env name=IMAGE::${IMAGE}"
 
-            - name: Docker Build
-              if: env.SKIP != '1'
-              run: |
-                  docker build --build-arg ${VERSION} --tag docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:latest .
-
             - name: NPM Test
               if: env.SKIP != '1'
               run: |
@@ -60,6 +55,11 @@ jobs:
                   npm test
                   npm run lint
                   npm run check
+
+            - name: Docker Build
+              if: env.SKIP != '1'
+              run: |
+                  docker build --build-arg ${VERSION} --tag docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:latest .
 
             - name: Git Push
               if: github.event_name != 'pull_request' && env.SKIP != '1'

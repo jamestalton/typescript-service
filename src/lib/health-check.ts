@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 /* eslint-disable no-process-exit */
+/* istanbul ignore file */
 import { request } from 'http'
 
 request(
