@@ -71,6 +71,7 @@ jobs:
               if: github.event_name != 'pull_request' && env.SKIP != '1'
               run: |
                   echo ${{ secrets.GITHUB_TOKEN }} | docker login -u "${GITHUB_ACTOR}" --password-stdin docker.pkg.github.com
+                  export DOCKER_CONTENT_TRUST=1
                   docker push docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:latest
                   docker tag docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:latest docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:${VERSION}
                   docker push docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:${VERSION}
