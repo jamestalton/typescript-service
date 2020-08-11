@@ -85,13 +85,13 @@ jobs:
             # - name: CodeQL Analysis
             #   uses: github/codeql-action/analyze@v1
 
-            # - name: Trivy and Dockle Image Scan
-            #   uses: azure/container-scan@v0
-            #   with:
-            #       image-name: docker.pkg.github.com/jamestalton/typescript-service:latest
+            - name: Trivy and Dockle Image Scan
+              uses: azure/container-scan@v0
+              with:
+                  image-name: docker.pkg.github.com/${{ GITHUB_REPOSITORY }}/${{ IMAGE }}:${{ VERSION }}
 
             - name: Anchore Image Scan
               uses: anchore/scan-action@v1
               with:
-                  image-reference: docker.pkg.github.com/jamestalton/typescript-service:latest
+                  image-reference: docker.pkg.github.com/${{ GITHUB_REPOSITORY }}/${{ IMAGE }}:${{ VERSION }}
                   fail-build: true
