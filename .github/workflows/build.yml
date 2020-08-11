@@ -75,3 +75,12 @@ jobs:
                   docker push docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:latest
                   docker tag docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:latest docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:$VERSION
                   docker push docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:$VERSION
+
+            - name: Initialize CodeQL
+              uses: github/codeql-action/init@v1
+
+            - name: CodeQL Autobuild
+              uses: github/codeql-action/autobuild@v1
+
+            - name: CodeQL Analysis
+              uses: github/codeql-action/analyze@v1
