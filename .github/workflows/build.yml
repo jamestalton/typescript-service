@@ -36,23 +36,25 @@ jobs:
                   git add -u :/
                   set +e
                   git commit -m "update dependencies"
-                  EXIT=$?
-                  echo "::set-env name=EXIT::${EXIT}"
+                  SKIP=$?
+                  echo "::set-env name=SKIP::${SKIP}"
 
             - name: Update Version
-              if: github.event_name != 'pull_request' && env.EXIT != '1'
+              if: github.event_name != 'pull_request' && env.SKIP != '1'
               run: |
                   npm version patch
+                  IMAGE=`cat package.json | jq -r .name`
+                  VERSION=v`cat package.json | jq -r .version`
+                  echo "::set-env name=VERSION::${VERSION}"
+                  echo "::set-env name=IMAGE::${IMAGE}"
 
             - name: Docker Build
-              if: github.event_name != 'pull_request' && env.EXIT != '1'
+              if: env.SKIP != '1'
               run: |
-                  VERSION=v`cat package.json | jq -r .version`
-                  IMAGE=`cat package.json | jq -r .name`
-                  docker build --build-arg VERSION --tag docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:latest .
+                  docker build --build-arg ${VERSION} --tag docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:latest .
 
             - name: NPM Test
-              if: env.EXIT != '1'
+              if: env.SKIP != '1'
               run: |
                   npm ci
                   npm test
@@ -60,21 +62,18 @@ jobs:
                   npm run check
 
             - name: Git Push
-              if: github.event_name != 'pull_request' && env.EXIT != '1'
+              if: github.event_name != 'pull_request' && env.SKIP != '1'
               run: |
-                  VERSION=v`cat package.json | jq -r .version`
                   git push
-                  git push origin $VERSION
+                  git push origin ${VERSION}
 
             - name: Docker Push
-              if: github.event_name != 'pull_request' && env.EXIT != '1'
+              if: github.event_name != 'pull_request' && env.SKIP != '1'
               run: |
-                  VERSION=v`cat package.json | jq -r .version`
-                  IMAGE=`cat package.json | jq -r .name`
                   echo ${{ secrets.GITHUB_TOKEN }} | docker login -u "${GITHUB_ACTOR}" --password-stdin docker.pkg.github.com
                   docker push docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:latest
-                  docker tag docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:latest docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:$VERSION
-                  docker push docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:$VERSION
+                  docker tag docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:latest docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:${VERSION}
+                  docker push docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:${VERSION}
 
             # - name: Initialize CodeQL
             #   uses: github/codeql-action/init@v1
@@ -86,12 +85,14 @@ jobs:
             #   uses: github/codeql-action/analyze@v1
 
             - name: Trivy and Dockle Image Scan
+              if: github.event_name != 'pull_request' && env.SKIP != '1'
               uses: azure/container-scan@v0
               with:
-                  image-name: docker.pkg.github.com/${{ github.repository }}/typescript-server:latest
+                  image-name: docker.pkg.github.com/${{ github.repository }}/${{ env.IMAGE }}:${{ env.VERSION }}
 
             - name: Anchore Image Scan
+              if: github.event_name != 'pull_request' && env.SKIP != '1'
               uses: anchore/scan-action@v1
               with:
-                  image-reference: docker.pkg.github.com/${{ github.repository }}/typescript-server:latest
+                  image-reference: docker.pkg.github.com/${{ github.repository }}/${{ env.IMAGE }}:${{ env.VERSION }}
                   fail-build: true
