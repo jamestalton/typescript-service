@@ -88,10 +88,10 @@ jobs:
             - name: Trivy and Dockle Image Scan
               uses: azure/container-scan@v0
               with:
-                  image-name: docker.pkg.github.com/${{ GITHUB_REPOSITORY }}/${{ IMAGE }}:${{ VERSION }}
+                  image-name: docker.pkg.github.com/${{ github.repository }}/typescript-service:latest
 
             - name: Anchore Image Scan
               uses: anchore/scan-action@v1
               with:
-                  image-reference: docker.pkg.github.com/${{ GITHUB_REPOSITORY }}/${{ IMAGE }}:${{ VERSION }}
+                  image-reference: docker.pkg.github.com/${{ github.repository }}/typescript-service:latest
                   fail-build: true
