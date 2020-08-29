@@ -12,7 +12,7 @@ spec:
         rollingUpdate:
             maxSurge: 1
             maxUnavailable: 0
-    replicas: $APP_REPLICAS
+    replicas: $REPLICAS
     selector:
         matchLabels:
             app: $NAME
@@ -20,14 +20,14 @@ spec:
         metadata:
             labels:
                 app: $NAME
-                version: $APP_VERSION
+                version: $VERSION
         spec:
             containers:
                 - name: $NAME
-                  image: $APP_IMAGE
+                  image: $IMAGE
                   env:
                       - name: PORT
-                        value: '3000'
+                        value: '$PORT'
 
                   # envFrom:
                   #     - configMapRef:
@@ -38,7 +38,7 @@ spec:
                   resources:
                       requests:
                           memory: 64Mi
-                          cpu: 0.001
+                          cpu: 0.01
                       limits:
                           memory: 128Mi
                           cpu: 1
@@ -46,7 +46,7 @@ spec:
                   readinessProbe:
                       httpGet:
                           path: /ping
-                          port: 3000
+                          port: $PORT
                           scheme: HTTP
                       initialDelaySeconds: 0
                       periodSeconds: 1

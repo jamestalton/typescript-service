@@ -40,9 +40,9 @@ jobs:
 
             - name: Configure Deployment
               env:
-                  APP_REPLICAS: 1
-                  APP_INGRESS_PATH: /${{ env.NAME }}
-                  APP_IMAGE: ${{ secrets.DOCKER_REGISTRY }}/${{ env.NAME }}:${{ env.VERSION }}
+                  IMAGE: ${{ secrets.DOCKER_REGISTRY }}/${{ env.NAME }}:${{ env.VERSION }}
+                  REPLICAS: 1
+                  INGRESS_PATH: /${{ env.NAME }}
               run: |
                   cat deploy/secret.yaml | envsubst > secret.yaml
                   cat deploy/deployment.yaml | envsubst > deployment.yaml
@@ -74,7 +74,7 @@ jobs:
               run: kubectl rollout undo deployment/${{ env.NAME }} | true
 
             # - name: Autoscale deployment
-            #   run: kubectl --namespace=$NAMESPACE autoscale deployment $NAME --cpu-percent=$APP_AUTOSCALE_PERCENT --min=$APP_AUTOSCALE_MIN --max=$APP_AUTOSCALE_MAX
+            #   run: kubectl --namespace=${{ env.NAMESPACE }} autoscale deployment ${{ env.NAME }} --cpu-percent=10000 --min=1 --max=2
 
             - name: Show service
               run: cat service.yaml

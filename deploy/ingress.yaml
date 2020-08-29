@@ -14,7 +14,7 @@ spec:
     rules:
         - http:
               paths:
-                  - path: $APP_INGRESS_PATH
+                  - path: $INGRESS_PATH
                     pathType: Prefix
                     backend:
                         serviceName: $NAME
