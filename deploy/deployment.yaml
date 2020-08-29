@@ -19,7 +19,7 @@ spec:
         metadata:
             labels:
                 app: $APP_NAME
-                version: v$APP_VERSION
+                version: $APP_VERSION
         spec:
             containers:
                 - name: $APP_NAME
