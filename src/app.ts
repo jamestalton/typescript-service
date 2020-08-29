@@ -7,7 +7,7 @@ export function handleRequest(
     req: IncomingMessage | Http2ServerRequest,
     res: ServerResponse | Http2ServerResponse
 ): void {
-    const buffer = Buffer.from(JSON.stringify({ message: 'Hello World' }))
+    const buffer = Buffer.from(JSON.stringify({ message: 'Hello World', files: readdirSync('config') }))
     res.setHeader('Content-Type', 'application/json')
     res.setHeader('Content-Length', buffer.length)
     res.writeHead(200)
@@ -18,6 +18,5 @@ export function handleRequest(
         status: res.statusCode,
         method: req.method,
         url: req.url,
-        files: readdirSync('config'),
     })
 }
