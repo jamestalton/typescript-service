@@ -1,6 +1,7 @@
 import { logger } from './logger'
 import { IncomingMessage, ServerResponse, STATUS_CODES } from 'http'
 import { Http2ServerRequest, Http2ServerResponse } from 'http2'
+import { readdirSync } from 'fs'
 
 export function handleRequest(
     req: IncomingMessage | Http2ServerRequest,
@@ -17,5 +18,6 @@ export function handleRequest(
         status: res.statusCode,
         method: req.method,
         url: req.url,
+        files: readdirSync('config'),
     })
 }

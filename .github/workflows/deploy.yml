@@ -26,6 +26,15 @@ jobs:
               with:
                   version: ${{ matrix.k8s_version }}
 
+                  # k3d c -p 443:443 >/dev/null 2>/dev/null
+                  # until curl -k https://localhost:443 >/dev/null 2>/dev/null
+                  # do
+                  #     sleep 1
+                  # done
+                  # duration=$(( SECONDS - start ))
+                  # echo "Cluster Ready (${duration}s)"
+                  # export KUBECONFIG="$(k3d get-kubeconfig)"
+
             # - uses: azure/k8s-set-context@v1
             #   with:
             #     method: kubeconfig
@@ -82,7 +91,7 @@ jobs:
                   kubectl rollout undo --namespace=${{ env.NAMESPACE }} deployment/${{ env.NAME }} | true
 
             - name: Autoscale deployment
-              run: kubectl --namespace=${{ env.NAMESPACE }} autoscale deployment ${{ env.NAME }} --cpu-percent=10000 --min=1 --max=2
+              run: kubectl --namespace=${{ env.NAMESPACE }} autoscale deployment ${{ env.NAME }} --cpu-percent=9000 --min=1 --max=2
 
             - name: Cleanup old resources
               run: |
@@ -128,7 +137,8 @@ jobs:
             - name: Show service logs
               run: kubectl --namespace=${{ env.NAMESPACE }} --selector=app=${{ env.NAME }},version=${{ env.VERSION }} logs
 
+            - name: Wait on cluster
+              run: until curl -k https://localhost:443 >/dev/null 2>/dev/null; do sleep 1; done
+
             - name: Test Service
-              run: |
-                  IP=`kubectl get service traefik -n kube-system -o json | jq -r .status.loadBalancer.ingress[0].ip`
-                  curl -ikf https://${IP}/typescript-service/ping
+              run: curl -ikf https://${IP}/typescript-service/ping
