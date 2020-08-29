@@ -86,9 +86,7 @@ jobs:
               id: buildx_args
               run: |
                   echo ::set-output name=buildx_args::--platform linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le \
-                  --cache-from "type=local,src=/tmp/.buildx-cache" \
                   --build-arg VERSION=${VERSION} \
-                  --output "type=image,push=false" \
                   --tag ${{ secrets.DOCKER_REGISTRY }}/${IMAGE}:${VERSION} \
                   --tag ${{ secrets.DOCKER_REGISTRY }}/${IMAGE}:latest \
                   .
@@ -97,6 +95,10 @@ jobs:
               if: github.event_name != 'pull_request' && env.SKIP != '1'
               run: |
                   docker buildx build ${{ steps.buildx_args.outputs.buildx_args }}
+                  docker buildx build \
+                      --cache-to "type=local,dest=/tmp/.buildx-cache" \
+                      --output "type=image,push=false" \
+                      ${{ steps.buildx_args.outputs.buildx_args }}
 
             - name: Trivy and Dockle Image Scan
               if: github.event_name != 'pull_request' && env.SKIP != '1'
@@ -114,7 +116,10 @@ jobs:
             - name: Docker Push
               if: github.event_name != 'pull_request' && env.SKIP != '1'
               run: |
-                  docker buildx build --output "type=image,push=true" ${{ steps.buildx_args.outputs.buildx_args }}
+                  docker buildx build \
+                      --cache-from "type=local,src=/tmp/.buildx-cache" \
+                      --output "type=image,push=true" \
+                      ${{ steps.buildx_args.outputs.buildx_args }}
 
             - name: Inspect image
               if: github.event_name != 'pull_request' && env.SKIP != '1'
