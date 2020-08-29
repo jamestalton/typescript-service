@@ -26,7 +26,7 @@ spec:
                   image: $APP_IMAGE
                   env:
                       - name: PORT
-                        value: 3000
+                        value: '3000'
 
                   # envFrom:
                   #     - configMapRef:
