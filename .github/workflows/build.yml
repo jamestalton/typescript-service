@@ -135,3 +135,11 @@ jobs:
             #   with:
             #       image-reference: ${{ secrets.DOCKER_REGISTRY }}/${{ env.IMAGE }}:${{ env.VERSION }}
             #       fail-build: true
+
+          - name: Repository Dispatch
+            uses: peter-evans/repository-dispatch@v1
+            with:
+              token: ${{ secrets.REPOSITORY_DISPATCH_ACCESS_TOKEN }}
+              repository: jamestalton/typescript-service
+              event-type: deploy
+              client-payload: '{"version": "${{ env.VERSION }}"}'

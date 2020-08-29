@@ -1,7 +1,7 @@
 {
-    "name": "typescript-server",
+    "name": "typescript-service",
     "version": "0.0.112",
-    "description": "Typescript Server",
+    "description": "Typescript Service",
     "author": "James Talton",
     "license": "UNLICENSED",
     "private": true,
