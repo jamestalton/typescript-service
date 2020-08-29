@@ -170,8 +170,8 @@ jobs:
                   APP_REQUESTS_CPU: 0.01
                   APP_LIMITS_CPU: 1
                   APP_READINESS_PATH: /ping
-                  APP_READINESS_PORT: /ping
-                  APP_READINESS_SCHEME: /ping
+                  APP_READINESS_PORT: 3000
+                  APP_READINESS_SCHEME: HTTP
                   APP_READINESS_DELAY: 0
                   APP_READINESS_PERIOD: 1
                   APP_READINESS_TIMEOUT: 1
