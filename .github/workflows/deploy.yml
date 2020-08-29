@@ -59,7 +59,7 @@ jobs:
               run: kubectl apply -f deployment.yaml
 
             - name: Wait for deployment rollout
-              run: kubectl rollout status -w --timeout=30s deployment/${{ env.NAME }}
+              run: kubectl rollout status -w --timeout=30s --namespace=${{ env.NAMESPACE }} deployment/${{ env.NAME }}
 
             - name: Describe Pods
               if: ${{ failure() }}
@@ -71,7 +71,7 @@ jobs:
 
             - name: Rollback deployment
               if: ${{ failure() }}
-              run: kubectl rollout undo deployment/${{ env.NAME }} | true
+              run: kubectl rollout undo --namespace=${{ env.NAMESPACE }} deployment/${{ env.NAME }} | true
 
             # - name: Autoscale deployment
             #   run: kubectl --namespace=${{ env.NAMESPACE }} autoscale deployment ${{ env.NAME }} --cpu-percent=10000 --min=1 --max=2
