@@ -136,9 +136,3 @@ jobs:
 
             - name: Show service logs
               run: kubectl --namespace=${{ env.NAMESPACE }} --selector=app=${{ env.NAME }},version=${{ env.VERSION }} logs
-
-            - name: Wait on cluster
-              run: until curl -k https://localhost:443 >/dev/null 2>/dev/null; do sleep 1; done
-
-            - name: Test Service
-              run: curl -ikf https://${IP}/typescript-service/ping
