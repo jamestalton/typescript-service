@@ -61,19 +61,46 @@ jobs:
               run: |
                   docker build --build-arg ${VERSION} --tag docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:latest .
 
+            - name: Set up Docker Buildx
+              if: github.event_name != 'pull_request' && env.SKIP != '1'
+              id: buildx
+              uses: crazy-max/ghaction-docker-buildx@v3.3.0
+
+              name: Login to DockerHub
+              if: github.event_name != 'pull_request' && env.SKIP != '1'
+              uses: docker/login-action@v1
+              with:
+                username: ${{ secrets.DOCKER_USERNAME }}
+                password: ${{ secrets.DOCKER_TOKEN }}
+
+            - name: Run Buildx
+              if: github.event_name != 'pull_request' && env.SKIP != '1'
+              run: |
+                  docker buildx build \
+                    --platform  ${{ steps.buildx.outputs.platforms }} \
+                    --build-arg VERSION=${VERSION} \
+                    --output "type=image,push=true" \
+                    --tag ${{ secrets.DOCKER_REGISTRY }}/${IMAGE}:${VERSION} \
+                    --tag ${{ secrets.DOCKER_REGISTRY }}/${IMAGE}:latest
+
+            - name: Inspect image
+              if: always() && github.event_name != 'pull_request'
+              run: |
+                docker buildx imagetools inspect ${{ steps.prepare.outputs.docker_image }}:${{ steps.prepare.outputs.version }}
+                          
             - name: Git Push
               if: github.event_name != 'pull_request' && env.SKIP != '1'
               run: |
                   git push
                   git push origin ${VERSION}
 
-            - name: Docker Push
-              if: github.event_name != 'pull_request' && env.SKIP != '1'
-              run: |
-                  echo ${{ secrets.GITHUB_TOKEN }} | docker login -u "${GITHUB_ACTOR}" --password-stdin docker.pkg.github.com
-                  docker push docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:latest
-                  docker tag docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:latest docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:${VERSION}
-                  docker push docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:${VERSION}
+            # - name: Docker Push
+            #   if: github.event_name != 'pull_request' && env.SKIP != '1'
+            #   run: |
+            #       echo ${{ secrets.GITHUB_TOKEN }} | docker login -u "${GITHUB_ACTOR}" --password-stdin docker.pkg.github.com
+            #       docker push docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:latest
+            #       docker tag docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:latest docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:${VERSION}
+            #       docker push docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:${VERSION}
 
             # - name: Initialize CodeQL
             #   uses: github/codeql-action/init@v1
