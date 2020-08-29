@@ -163,8 +163,8 @@ jobs:
                   APP_NAME: typescript-server
                   APP_PORT: 3000
                   APP_REPLICAS: 1
-                  APP_VERSION: ${VERSION}
-                  APP_IMAGE: ${{ secrets.DOCKER_REGISTRY }}/${IMAGE}:${VERSION}
+                  APP_VERSION: ${{ env.VERSION }}
+                  APP_IMAGE: ${{ secrets.DOCKER_REGISTRY }}/${{ env.IMAGE }}:${{ env.VERSION }}
                   APP_REQUESTS_MEMORY: 64Mi
                   APP_LIMITS_MEMORY: 128Mi
                   APP_REQUESTS_CPU: 0.01
@@ -194,7 +194,6 @@ jobs:
               with:
                   namespace: typescript-service
                   manifests: |
-                      secret.yaml
                       deployment.yaml
                       service.yaml
                       ingress.yaml
