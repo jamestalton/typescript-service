@@ -56,15 +56,10 @@ jobs:
                   npm run lint
                   npm run check
 
-            - name: Docker Build
-              if: env.SKIP != '1'
-              run: |
-                  docker build --build-arg ${VERSION} --tag docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:latest .
-
-            - name: Set up Docker Buildx
-              if: github.event_name != 'pull_request' && env.SKIP != '1'
-              id: buildx
-              uses: crazy-max/ghaction-docker-buildx@v3.3.0
+            # - name: Docker Build
+            #   if: env.SKIP != '1'
+            #   run: |
+            #       docker build --build-arg ${VERSION} --tag docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:latest .
 
             - name: Login to DockerHub
               if: github.event_name != 'pull_request' && env.SKIP != '1'
@@ -73,7 +68,31 @@ jobs:
                   username: ${{ secrets.DOCKER_USERNAME }}
                   password: ${{ secrets.DOCKER_TOKEN }}
 
-            - name: Run Buildx
+            - name: Set up Docker Buildx
+              if: github.event_name != 'pull_request' && env.SKIP != '1'
+              id: buildx
+              uses: crazy-max/ghaction-docker-buildx@v3.3.0
+
+            - name: Cache Docker layers
+              uses: actions/cache@v2
+              id: cache
+              with:
+                  path: /tmp/.buildx-cache
+                  key: ${{ runner.os }}-buildx-${{ github.sha }}
+                  restore-keys: |
+                      ${{ runner.os }}-buildx-
+
+            - name: Docker Build Args
+              id: buildx_args
+              run: |
+                  echo ::set-output name=buildx_args::--platform linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le \
+                  --build-arg VERSION=${VERSION} \
+                  --output "type=image,push=true" \
+                  --tag ${{ secrets.DOCKER_REGISTRY }}/${IMAGE}:${VERSION} \
+                  --tag ${{ secrets.DOCKER_REGISTRY }}/${IMAGE}:latest \
+                  .
+
+            - name: Docker Build
               if: github.event_name != 'pull_request' && env.SKIP != '1'
               run: |
                   docker buildx build \
@@ -84,10 +103,28 @@ jobs:
                     --tag ${{ secrets.DOCKER_REGISTRY }}/${IMAGE}:latest \
                     .
 
-            - name: Inspect image
-              if: always() && github.event_name != 'pull_request'
+            - name: Trivy and Dockle Image Scan
+              if: github.event_name != 'pull_request' && env.SKIP != '1'
+              uses: azure/container-scan@v0
+              with:
+                  image-name: docker.pkg.github.com/${{ github.repository }}/${{ env.IMAGE }}:${{ env.VERSION }}
+
+            - name: Anchore Image Scan
+              if: github.event_name != 'pull_request' && env.SKIP != '1'
+              uses: anchore/scan-action@v1
+              with:
+                  image-reference: docker.pkg.github.com/${{ github.repository }}/${{ env.IMAGE }}:${{ env.VERSION }}
+                  fail-build: true
+
+            - name: Docker Push
+              if: github.event_name != 'pull_request' && env.SKIP != '1'
               run: |
-                  docker buildx imagetools inspect ${{ steps.prepare.outputs.docker_image }}:${{ steps.prepare.outputs.version }}
+                  docker buildx build --output "type=image,push=true" ${{ steps.buildx_args.outputs.buildx_args }}
+
+            - name: Inspect image
+              if: github.event_name != 'pull_request' && env.SKIP != '1'
+              run: |
+                  docker buildx imagetools inspect ${{ secrets.DOCKER_REGISTRY }}/${IMAGE}:${VERSION}
 
             - name: Git Push
               if: github.event_name != 'pull_request' && env.SKIP != '1'
@@ -112,21 +149,8 @@ jobs:
             # - name: CodeQL Analysis
             #   uses: github/codeql-action/analyze@v1
 
-            - name: Trivy and Dockle Image Scan
-              if: github.event_name != 'pull_request' && env.SKIP != '1'
-              uses: azure/container-scan@v0
-              with:
-                  image-name: docker.pkg.github.com/${{ github.repository }}/${{ env.IMAGE }}:${{ env.VERSION }}
-
-            - name: Anchore Image Scan
-              if: github.event_name != 'pull_request' && env.SKIP != '1'
-              uses: anchore/scan-action@v1
-              with:
-                  image-reference: docker.pkg.github.com/${{ github.repository }}/${{ env.IMAGE }}:${{ env.VERSION }}
-                  fail-build: true
-
             - uses: debianmaster/actions-k3s@master
-              id: k3s
+              if: github.event_name != 'pull_request' && env.SKIP != '1'
               with:
                   version: v1.18.2-k3s1
 
@@ -137,6 +161,7 @@ jobs:
             #     context: <context name>
 
             - uses: Azure/k8s-create-secret@v1
+              if: github.event_name != 'pull_request' && env.SKIP != '1'
               with:
                   #     container-registry-url: secrets.DOCKER_REGISTRY
                   container-registry-username: ${{ secrets.DOCKER_USERNAME }}
@@ -153,3 +178,8 @@ jobs:
             #       demo.azurecr.io/k8sdemo:${{ github.sha }}
             #     imagepullsecrets: |
             #       demo-k8s-secret
+
+            - name: Kubernetes Test
+              if: github.event_name != 'pull_request' && env.SKIP != '1'
+              run: |
+                  kubectl get all
