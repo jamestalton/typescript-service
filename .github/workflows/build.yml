@@ -77,7 +77,7 @@ jobs:
               if: github.event_name != 'pull_request' && env.SKIP != '1'
               run: |
                   docker buildx build \
-                    --platform  ${{ steps.buildx.outputs.platforms }} \
+                    --platform linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le \
                     --build-arg VERSION=${VERSION} \
                     --output "type=image,push=true" \
                     --tag ${{ secrets.DOCKER_REGISTRY }}/${IMAGE}:${VERSION} \
@@ -124,3 +124,32 @@ jobs:
               with:
                   image-reference: docker.pkg.github.com/${{ github.repository }}/${{ env.IMAGE }}:${{ env.VERSION }}
                   fail-build: true
+
+            - uses: debianmaster/actions-k3s@master
+              id: k3s
+              with:
+                  version: v1.18.2-k3s1
+
+            # - uses: azure/k8s-set-context@v1
+            #   with:
+            #     method: kubeconfig
+            #     kubeconfig: <your kubeconfig>
+            #     context: <context name>
+
+            - uses: Azure/k8s-create-secret@v1
+              with:
+                  #     container-registry-url: secrets.DOCKER_REGISTRY
+                  container-registry-username: ${{ secrets.DOCKER_USERNAME }}
+                  container-registry-password: ${{ secrets.DOCKER_TOKEN }}
+                  secret-name: demo-k8s-secret
+
+            # - name: Deploy to Kubernetes cluster
+            #   uses: Azure/k8s-deploy@v1.1.0
+            #     namespace: 'myapp'
+            #     manifests: |
+            #         deployment.yaml
+            #         service.yaml
+            #     images: |
+            #       demo.azurecr.io/k8sdemo:${{ github.sha }}
+            #     imagepullsecrets: |
+            #       demo-k8s-secret
