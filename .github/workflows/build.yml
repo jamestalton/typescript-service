@@ -145,6 +145,7 @@ jobs:
                 k8s_version: [v1.18.2-k3s1]
         env:
             APP_NAMESPACE: typescript-server
+            APP_NAME: typescript-server
         steps:
             - uses: actions/checkout@v2
 
@@ -199,6 +200,9 @@ jobs:
                   cat deploy/service.yaml | envsubst > service.yaml
                   cat deploy/ingress.yaml | envsubst > ingress.yaml
 
+            - name: Show deployment
+              run: cat deployment.yaml
+
             - name: Create namespace
               run: kubectl create namespace typescript-service | true
 
@@ -210,15 +214,15 @@ jobs:
 
             - name: Describe Pods
               if: ${{ failure() }}
-              run: kubectl --namespace=$APP_NAMESPACE --selector=app=$APP_NAME,version=v$APP_VERSION describe pods
+              run: kubectl --namespace=${{ env.APP_NAMESPACE }} --selector=app=${{ env.APP_NAME }},version=${{ env.VERSION }} describe pods
 
             - name: Pod Logs
               if: ${{ failure() }}
-              run: kubectl --namespace=$APP_NAMESPACE --selector=app=$APP_NAME,version=v$APP_VERSION logs
+              run: kubectl --namespace=${{ env.APP_NAMESPACE }} --selector=app=${{ env.APP_NAME }},version=${{ env.VERSION }} logs
 
             - name: Rollback deployment
               if: ${{ failure() }}
-              run: kubectl rollout undo deployment/${IMAGE} | true
+              run: kubectl rollout undo deployment/${{ env.IMAGE }} | true
 
             # - name: Autoscale deployment
             #   run: kubectl --namespace=$APP_NAMESPACE autoscale deployment $APP_NAME --cpu-percent=$APP_AUTOSCALE_PERCENT --min=$APP_AUTOSCALE_MIN --max=$APP_AUTOSCALE_MAX

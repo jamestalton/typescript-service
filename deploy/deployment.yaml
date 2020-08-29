@@ -45,7 +45,7 @@ spec:
                   readinessProbe:
                       httpGet:
                           path: /ping
-                          port: $APP_READINESS_PORT
+                          port: 3000
                           scheme: HTTP
                       initialDelaySeconds: 0
                       periodSeconds: 1
