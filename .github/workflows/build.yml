@@ -56,24 +56,13 @@ jobs:
                   npm run lint
                   npm run check
 
-            # - name: Docker Build
-            #   if: env.SKIP != '1'
-            #   run: |
-            #       docker build --build-arg ${VERSION} --tag docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:latest .
-
-            - name: Login to DockerHub
-              if: github.event_name != 'pull_request' && env.SKIP != '1'
-              uses: docker/login-action@v1
-              with:
-                  username: ${{ secrets.DOCKER_USERNAME }}
-                  password: ${{ secrets.DOCKER_TOKEN }}
-
             - name: Set up Docker Buildx
-              if: github.event_name != 'pull_request' && env.SKIP != '1'
+              if: env.SKIP != '1'
               id: buildx
               uses: crazy-max/ghaction-docker-buildx@v3.3.0
 
             - name: Cache Docker layers
+              if: env.SKIP != '1'
               uses: actions/cache@v2
               id: cache
               with:
@@ -83,6 +72,7 @@ jobs:
                       ${{ runner.os }}-buildx-
 
             - name: Docker Build Args
+              if: env.SKIP != '1'
               id: buildx_args
               run: |
                   echo ::set-output name=buildx_args::--platform linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le \
@@ -92,10 +82,11 @@ jobs:
                   .
 
             - name: Docker Build
-              if: github.event_name != 'pull_request' && env.SKIP != '1'
+              if: env.SKIP != '1'
               run: |
                   docker buildx build ${{ steps.buildx_args.outputs.buildx_args }}
                   docker buildx build \
+                      --cache-from "type=local,src=/tmp/.buildx-cache" \
                       --cache-to "type=local,dest=/tmp/.buildx-cache" \
                       --output "type=image,push=false" \
                       ${{ steps.buildx_args.outputs.buildx_args }}
@@ -113,6 +104,19 @@ jobs:
                   image-reference: ${{ secrets.DOCKER_REGISTRY }}/${{ env.IMAGE }}:${{ env.VERSION }}
                   fail-build: true
 
+            - name: Git Push
+              if: github.event_name != 'pull_request' && env.SKIP != '1'
+              run: |
+                  git push
+                  git push origin ${VERSION}
+
+            - name: Login to DockerHub
+              if: github.event_name != 'pull_request' && env.SKIP != '1'
+              uses: docker/login-action@v1
+              with:
+                  username: ${{ secrets.DOCKER_USERNAME }}
+                  password: ${{ secrets.DOCKER_TOKEN }}
+
             - name: Docker Push
               if: github.event_name != 'pull_request' && env.SKIP != '1'
               run: |
@@ -125,29 +129,6 @@ jobs:
               if: github.event_name != 'pull_request' && env.SKIP != '1'
               run: |
                   docker buildx imagetools inspect ${{ secrets.DOCKER_REGISTRY }}/${IMAGE}:${VERSION}
-
-            - name: Git Push
-              if: github.event_name != 'pull_request' && env.SKIP != '1'
-              run: |
-                  git push
-                  git push origin ${VERSION}
-
-            # - name: Docker Push
-            #   if: github.event_name != 'pull_request' && env.SKIP != '1'
-            #   run: |
-            #       echo ${{ secrets.GITHUB_TOKEN }} | docker login -u "${GITHUB_ACTOR}" --password-stdin docker.pkg.github.com
-            #       docker push docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:latest
-            #       docker tag docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:latest docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:${VERSION}
-            #       docker push docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE}:${VERSION}
-
-            # - name: Initialize CodeQL
-            #   uses: github/codeql-action/init@v1
-
-            # - name: CodeQL Autobuild
-            #   uses: github/codeql-action/autobuild@v1
-
-            # - name: CodeQL Analysis
-            #   uses: github/codeql-action/analyze@v1
 
             - uses: debianmaster/actions-k3s@master
               if: github.event_name != 'pull_request' && env.SKIP != '1'
@@ -166,20 +147,40 @@ jobs:
                   #     container-registry-url: secrets.DOCKER_REGISTRY
                   container-registry-username: ${{ secrets.DOCKER_USERNAME }}
                   container-registry-password: ${{ secrets.DOCKER_TOKEN }}
-                  secret-name: demo-k8s-secret
+                  secret-name: docker-secret
 
-            # - name: Deploy to Kubernetes cluster
-            #   uses: Azure/k8s-deploy@v1.1.0
-            #     namespace: 'myapp'
-            #     manifests: |
-            #         deployment.yaml
-            #         service.yaml
-            #     images: |
-            #       demo.azurecr.io/k8sdemo:${{ github.sha }}
-            #     imagepullsecrets: |
-            #       demo-k8s-secret
+            - name: Configure Deployment
+              if: github.event_name != 'pull_request' && env.SKIP != '1'
+              env:
+                APP_NAME: typescript-server
+                APP_PORT: 3000
+                APP_REPLICAS: 1
+                APP_VERSION: ${VERSION}
+                APP_IMAGE: ${{ secrets.DOCKER_REGISTRY }}/${IMAGE}:${VERSION}
+                APP_REQUESTS_MEMORY: 64Mi
+                APP_LIMITS_MEMORY: 128Mi
+                APP_REQUESTS_CPU: 0.01
+                APP_LIMITS_CPU: 1
+                APP_READINESS_PATH: /ping
+                APP_READINESS_PORT: /ping
+                APP_READINESS_SCHEME: /ping
+                APP_READINESS_DELAY: 0
+                APP_READINESS_PERIOD: 1
+                APP_READINESS_TIMEOUT: 1
+                APP_READINESS_SUCCESS_THRESHOLD: 1
+                APP_READINESS_FAILURE_THRESHOLD: 1
+                APP_INGRESS_PATH: /typescript-service
+              run: |
+                cat deploy/deployment.yaml | envsubst > deployment.yaml
+
+            - name: Deploy to Kubernetes cluster
+              uses: Azure/k8s-deploy@v1.1.0
+                namespace: typescript-service
+                manifests: deployment.yaml
+                images: ${{ secrets.DOCKER_REGISTRY }}/${IMAGE}:${VERSION}
+                imagepullsecrets: docker-secret
 
             - name: Kubernetes Test
               if: github.event_name != 'pull_request' && env.SKIP != '1'
               run: |
-                  kubectl get all
+                  kubectl get all -n typescript-service
