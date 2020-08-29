@@ -91,19 +91,6 @@ jobs:
                       --output "type=image,push=false" \
                       ${{ steps.buildx_args.outputs.buildx_args }}
 
-            # - name: Trivy and Dockle Image Scan
-            #   if: github.event_name != 'pull_request' && env.SKIP != '1'
-            #   uses: azure/container-scan@v0
-            #   with:
-            #       image-name: ${{ secrets.DOCKER_REGISTRY }}/${{ env.IMAGE }}:${{ env.VERSION }}
-
-            - name: Anchore Image Scan
-              if: github.event_name != 'pull_request' && env.SKIP != '1'
-              uses: anchore/scan-action@v1
-              with:
-                  image-reference: ${{ secrets.DOCKER_REGISTRY }}/${{ env.IMAGE }}:${{ env.VERSION }}
-                  fail-build: true
-
             - name: Git Push
               if: github.event_name != 'pull_request' && env.SKIP != '1'
               run: |
@@ -129,6 +116,19 @@ jobs:
               if: github.event_name != 'pull_request' && env.SKIP != '1'
               run: |
                   docker buildx imagetools inspect ${{ secrets.DOCKER_REGISTRY }}/${IMAGE}:${VERSION}
+
+            - name: Trivy and Dockle Image Scan
+              if: github.event_name != 'pull_request' && env.SKIP != '1'
+              uses: azure/container-scan@v0
+              with:
+                  image-name: ${{ secrets.DOCKER_REGISTRY }}/${{ env.IMAGE }}:${{ env.VERSION }}
+
+            - name: Anchore Image Scan
+              if: github.event_name != 'pull_request' && env.SKIP != '1'
+              uses: anchore/scan-action@v1
+              with:
+                  image-reference: ${{ secrets.DOCKER_REGISTRY }}/${{ env.IMAGE }}:${{ env.VERSION }}
+                  fail-build: true
 
             - uses: debianmaster/actions-k3s@master
               if: github.event_name != 'pull_request' && env.SKIP != '1'
