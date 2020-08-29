@@ -86,8 +86,9 @@ jobs:
               id: buildx_args
               run: |
                   echo ::set-output name=buildx_args::--platform linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le \
+                  --cache-from "type=local,src=/tmp/.buildx-cache" \
                   --build-arg VERSION=${VERSION} \
-                  --output "type=image,push=true" \
+                  --output "type=image,push=false" \
                   --tag ${{ secrets.DOCKER_REGISTRY }}/${IMAGE}:${VERSION} \
                   --tag ${{ secrets.DOCKER_REGISTRY }}/${IMAGE}:latest \
                   .
@@ -95,25 +96,19 @@ jobs:
             - name: Docker Build
               if: github.event_name != 'pull_request' && env.SKIP != '1'
               run: |
-                  docker buildx build \
-                    --platform linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le \
-                    --build-arg VERSION=${VERSION} \
-                    --output "type=image,push=true" \
-                    --tag ${{ secrets.DOCKER_REGISTRY }}/${IMAGE}:${VERSION} \
-                    --tag ${{ secrets.DOCKER_REGISTRY }}/${IMAGE}:latest \
-                    .
+                  docker buildx build ${{ steps.buildx_args.outputs.buildx_args }}
 
             - name: Trivy and Dockle Image Scan
               if: github.event_name != 'pull_request' && env.SKIP != '1'
               uses: azure/container-scan@v0
               with:
-                  image-name: docker.pkg.github.com/${{ github.repository }}/${{ env.IMAGE }}:${{ env.VERSION }}
+                  image-name: ${{ secrets.DOCKER_REGISTRY }}/${{ env.IMAGE }}:${{ env.VERSION }}
 
             - name: Anchore Image Scan
               if: github.event_name != 'pull_request' && env.SKIP != '1'
               uses: anchore/scan-action@v1
               with:
-                  image-reference: docker.pkg.github.com/${{ github.repository }}/${{ env.IMAGE }}:${{ env.VERSION }}
+                  image-reference: ${{ secrets.DOCKER_REGISTRY }}/${{ env.IMAGE }}:${{ env.VERSION }}
                   fail-build: true
 
             - name: Docker Push
