@@ -81,7 +81,8 @@ jobs:
                     --build-arg VERSION=${VERSION} \
                     --output "type=image,push=true" \
                     --tag ${{ secrets.DOCKER_REGISTRY }}/${IMAGE}:${VERSION} \
-                    --tag ${{ secrets.DOCKER_REGISTRY }}/${IMAGE}:latest
+                    --tag ${{ secrets.DOCKER_REGISTRY }}/${IMAGE}:latest \
+                    .
 
             - name: Inspect image
               if: always() && github.event_name != 'pull_request'
