@@ -24,6 +24,9 @@ spec:
             containers:
                 - name: $APP_NAME
                   image: $APP_IMAGE
+                  env:
+                      - name: PORT
+                        value: 3000
 
                   # envFrom:
                   #     - configMapRef:
@@ -33,22 +36,22 @@ spec:
 
                   resources:
                       requests:
-                          memory: $APP_REQUESTS_MEMORY
-                          cpu: $APP_REQUESTS_CPU
+                          memory: 64Mi
+                          cpu: 0.001
                       limits:
-                          memory: $APP_LIMITS_MEMORY
-                          cpu: $APP_LIMITS_CPU
+                          memory: 128Mi
+                          cpu: 1
 
                   readinessProbe:
                       httpGet:
-                          path: $APP_READINESS_PATH
+                          path: /ping
                           port: $APP_READINESS_PORT
-                          scheme: $APP_READINESS_SCHEME
-                      initialDelaySeconds: $APP_READINESS_DELAY
-                      periodSeconds: $APP_READINESS_PERIOD
-                      timeoutSeconds: $APP_READINESS_TIMEOUT
-                      successThreshold: $APP_READINESS_SUCCESS_THRESHOLD
-                      failureThreshold: $APP_READINESS_FAILURE_THRESHOLD
+                          scheme: HTTP
+                      initialDelaySeconds: 0
+                      periodSeconds: 1
+                      timeoutSeconds: 1
+                      successThreshold: 1
+                      failureThreshold: 1
 
 
                   # volumeMounts:
