@@ -1,13 +1,14 @@
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-    name: $APP_NAME
+    name: $NAME
     labels:
-        app: $APP_NAME
+        app: $NAME
+    namespace: $NAMESPACE
 spec:
     # tls:
     #   - hosts:
-    #       - ${APP_NAME}.default.${KS_REGION}.containers.appdomain.cloud
+    #       - ${NAME}.default.${KS_REGION}.containers.appdomain.cloud
     #       - ${KS_AKAMAI_DOMAIN}
     #     secretName: ${KS_CLUSTER_SUBDOMAIN}
     rules:
@@ -16,5 +17,5 @@ spec:
                   - path: $APP_INGRESS_PATH
                     pathType: Prefix
                     backend:
-                        serviceName: $APP_NAME
-                        servicePort: $APP_PORT
+                        serviceName: $NAME
+                        servicePort: $PORT

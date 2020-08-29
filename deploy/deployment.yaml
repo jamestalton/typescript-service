@@ -1,9 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: $APP_NAME
+    name: $NAME
     labels:
-        app: $APP_NAME
+        app: $NAME
+    namespace: $NAMESPACE
 spec:
     revisionHistoryLimit: 1
     strategy:
@@ -14,15 +15,15 @@ spec:
     replicas: $APP_REPLICAS
     selector:
         matchLabels:
-            app: $APP_NAME
+            app: $NAME
     template:
         metadata:
             labels:
-                app: $APP_NAME
+                app: $NAME
                 version: $APP_VERSION
         spec:
             containers:
-                - name: $APP_NAME
+                - name: $NAME
                   image: $APP_IMAGE
                   env:
                       - name: PORT
@@ -30,9 +31,9 @@ spec:
 
                   # envFrom:
                   #     - configMapRef:
-                  #           name: $APP_NAME
+                  #           name: $NAME
                   #     - secretRef:
-                  #           name: $APP_NAME
+                  #           name: $NAME
 
                   resources:
                       requests:
