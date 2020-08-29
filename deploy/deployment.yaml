@@ -1,109 +1,73 @@
----
-    apiVersion: apps/v1
-    kind: Deployment
-    metadata:
-      name: $APP_NAME
-      labels:
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: $APP_NAME
+    labels:
         app: $APP_NAME
-    spec:
-      revisionHistoryLimit: 1
-      strategy:
+spec:
+    revisionHistoryLimit: 1
+    strategy:
         type: RollingUpdate
         rollingUpdate:
-          maxSurge: 1
-          maxUnavailable: 0
-      replicas: $APP_REPLICAS
-      selector:
+            maxSurge: 1
+            maxUnavailable: 0
+    replicas: $APP_REPLICAS
+    selector:
         matchLabels:
-          app: $APP_NAME
-      template:
-        metadata:
-          labels:
             app: $APP_NAME
-            version: v$APP_VERSION
+    template:
+        metadata:
+            labels:
+                app: $APP_NAME
+                version: v$APP_VERSION
         spec:
-          containers:
-            - name: $APP_NAME
-              image: $APP_IMAGE
-              envFrom:
-                - configMapRef:
-                    name: $APP_NAME
-                - secretRef:
-                    name: $APP_NAME
-              volumeMounts:
-                - name: token-public-key
-                  mountPath: /certs/token-public-key.pem
-                  subPath: token-public-key.pem
-                  readOnly: true
-                - name: token-private-key
-                  mountPath: /certs/token-private-key.pem
-                  subPath: token-private-key.pem
-                  readOnly: true
-              resources:
-                requests:
-                  memory: $APP_REQUESTS_MEMORY
-                  cpu: $APP_REQUESTS_CPU
-                limits:
-                  memory: $APP_LIMITS_MEMORY
-                  cpu: $APP_LIMITS_CPU
-              readinessProbe:
-                httpGet:
-                  path: $APP_READINESS_PATH
-                  port: $APP_READINESS_PORT
-                  scheme: $APP_READINESS_SCHEME
-                initialDelaySeconds: $APP_READINESS_DELAY
-                periodSeconds: $APP_READINESS_PERIOD
-                timeoutSeconds: $APP_READINESS_TIMEOUT
-                successThreshold: $APP_READINESS_SUCCESS_THRESHOLD
-                failureThreshold: $APP_READINESS_FAILURE_THRESHOLD
-          volumes:
-            - name: token-public-key
-              configMap:
-                name: token-public-key
-            - name: token-private-key
-              secret:
-                secretName: token-private-key
-          imagePullSecrets:
-            - name: regcred
-    ---
-    apiVersion: v1
-    kind: Service
-    metadata:
-      name: $APP_NAME
-      labels:
-        app: $APP_NAME
-    spec:
-      ports:
-        - port: $APP_PORT
-      selector:
-        app: $APP_NAME
-    ---
-    apiVersion: networking.k8s.io/v1
-    kind: Ingress
-    metadata:
-      name: $APP_NAME
-      labels:
-        app: $APP_NAME
-    spec:
-      # tls:
-      #   - hosts:
-      #       - ${APP_NAME}.default.${KS_REGION}.containers.appdomain.cloud
-      #       - ${KS_AKAMAI_DOMAIN}
-      #     secretName: ${KS_CLUSTER_SUBDOMAIN}
-      rules:
-        - http:
-            paths:
-              - path: $APP_INGRESS_PATH
-                pathType: Prefix
-                backend:
-                  serviceName: $APP_NAME
-                  servicePort: $APP_PORT
-    # apiVersion: v1
-    # kind: Secret
-    # metadata:
-    #   name: testsecret
-    #   namespace: default
-    # data:
-    #   tls.crt: <base64_encoded_cert>
-    #   tls.key: <base64_encoded_key>
-    # type: Opaque
+            containers:
+                - name: $APP_NAME
+                  image: $APP_IMAGE
+
+                  # envFrom:
+                  #     - configMapRef:
+                  #           name: $APP_NAME
+                  #     - secretRef:
+                  #           name: $APP_NAME
+
+                  resources:
+                      requests:
+                          memory: $APP_REQUESTS_MEMORY
+                          cpu: $APP_REQUESTS_CPU
+                      limits:
+                          memory: $APP_LIMITS_MEMORY
+                          cpu: $APP_LIMITS_CPU
+
+                  readinessProbe:
+                      httpGet:
+                          path: $APP_READINESS_PATH
+                          port: $APP_READINESS_PORT
+                          scheme: $APP_READINESS_SCHEME
+                      initialDelaySeconds: $APP_READINESS_DELAY
+                      periodSeconds: $APP_READINESS_PERIOD
+                      timeoutSeconds: $APP_READINESS_TIMEOUT
+                      successThreshold: $APP_READINESS_SUCCESS_THRESHOLD
+                      failureThreshold: $APP_READINESS_FAILURE_THRESHOLD
+
+
+                  # volumeMounts:
+                  #     - name: token-public-key
+                  #       mountPath: /certs/token-public-key.pem
+                  #       subPath: token-public-key.pem
+                  #       readOnly: true
+                  #     - name: token-private-key
+                  #       mountPath: /certs/token-private-key.pem
+                  #       subPath: token-private-key.pem
+                  #       readOnly: true
+
+            # volumes:
+            #     - name: token-public-key
+            #       configMap:
+            #           name: token-public-key
+            #     - name: token-private-key
+            #       secret:
+            #           secretName: token-private-key
+
+            imagePullSecrets:
+                - name: regcred

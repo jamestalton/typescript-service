@@ -48,13 +48,21 @@ jobs:
                   echo "::set-env name=VERSION::${VERSION}"
                   echo "::set-env name=IMAGE::${IMAGE}"
 
-            - name: NPM Test
+            - name: Install Dependencies
               if: env.SKIP != '1'
-              run: |
-                  npm ci
-                  npm test
-                  npm run lint
-                  npm run check
+              run: npm ci
+
+            - name: Unit Tests
+              if: env.SKIP != '1'
+              run: npm test
+
+            - name: Lint
+              if: env.SKIP != '1'
+              run: npm run lint
+
+            - name: Code Formatting Check
+              if: env.SKIP != '1'
+              run: npm run check
 
             - name: Set up Docker Buildx
               if: env.SKIP != '1'
@@ -112,23 +120,23 @@ jobs:
                       --output "type=image,push=true" \
                       ${{ steps.buildx_args.outputs.buildx_args }}
 
-            - name: Inspect image
-              if: github.event_name != 'pull_request' && env.SKIP != '1'
-              run: |
-                  docker buildx imagetools inspect ${{ secrets.DOCKER_REGISTRY }}/${IMAGE}:${VERSION}
+            # - name: Inspect image
+            #   if: github.event_name != 'pull_request' && env.SKIP != '1'
+            #   run: |
+            #       docker buildx imagetools inspect ${{ secrets.DOCKER_REGISTRY }}/${IMAGE}:${VERSION}
 
-            - name: Trivy and Dockle Image Scan
-              if: github.event_name != 'pull_request' && env.SKIP != '1'
-              uses: azure/container-scan@v0
-              with:
-                  image-name: ${{ secrets.DOCKER_REGISTRY }}/${{ env.IMAGE }}:${{ env.VERSION }}
+            # - name: Trivy and Dockle Image Scan
+            #   if: github.event_name != 'pull_request' && env.SKIP != '1'
+            #   uses: azure/container-scan@v0
+            #   with:
+            #       image-name: ${{ secrets.DOCKER_REGISTRY }}/${{ env.IMAGE }}:${{ env.VERSION }}
 
-            - name: Anchore Image Scan
-              if: github.event_name != 'pull_request' && env.SKIP != '1'
-              uses: anchore/scan-action@v1
-              with:
-                  image-reference: ${{ secrets.DOCKER_REGISTRY }}/${{ env.IMAGE }}:${{ env.VERSION }}
-                  fail-build: true
+            # - name: Anchore Image Scan
+            #   if: github.event_name != 'pull_request' && env.SKIP != '1'
+            #   uses: anchore/scan-action@v1
+            #   with:
+            #       image-reference: ${{ secrets.DOCKER_REGISTRY }}/${{ env.IMAGE }}:${{ env.VERSION }}
+            #       fail-build: true
 
             - uses: debianmaster/actions-k3s@master
               if: github.event_name != 'pull_request' && env.SKIP != '1'
@@ -171,13 +179,20 @@ jobs:
                   APP_READINESS_FAILURE_THRESHOLD: 1
                   APP_INGRESS_PATH: /typescript-service
               run: |
+                  cat deploy/secret.yaml | envsubst > secret.yaml
                   cat deploy/deployment.yaml | envsubst > deployment.yaml
+                  cat deploy/service.yaml | envsubst > service.yaml
+                  cat deploy/ingress.yaml | envsubst > ingress.yaml
 
             - name: Deploy to Kubernetes cluster
               uses: Azure/k8s-deploy@v1.1.0
               with:
                   namespace: typescript-service
-                  manifests: deployment.yaml
+                  manifests: |
+                      secret.yaml
+                      deployment.yaml
+                      service.yaml
+                      ingress.yaml
                   images: ${{ secrets.DOCKER_REGISTRY }}/${IMAGE}:${VERSION}
                   imagepullsecrets: docker-secret
 
