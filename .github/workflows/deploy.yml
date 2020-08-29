@@ -44,6 +44,7 @@ jobs:
                   REPLICAS: 1
                   INGRESS_PATH: /${{ env.NAME }}
               run: |
+                  cat deploy/configmap.yaml | envsubst > configmap.yaml
                   cat deploy/secret.yaml | envsubst > secret.yaml
                   cat deploy/deployment.yaml | envsubst > deployment.yaml
                   cat deploy/service.yaml | envsubst > service.yaml
@@ -59,7 +60,10 @@ jobs:
               run: kubectl --namespace=${{ env.NAMESPACE }} get hpa ${{ env.NAME }} | true
 
             - name: Create deployment
-              run: kubectl apply -f deployment.yaml
+              run: |
+                  kubectl apply -f configmap.yaml
+                  kubectl apply -f secret.yaml
+                  kubectl apply -f deployment.yaml
 
             - name: Wait for deployment rollout
               run: kubectl rollout status -w --timeout=30s --namespace=${{ env.NAMESPACE }} deployment/${{ env.NAME }}
@@ -121,4 +125,4 @@ jobs:
               run: kubectl --namespace=${{ env.NAMESPACE }} --selector=app=${{ env.NAME }},version=${{ env.VERSION }} logs
 
             - name: Test Service
-              run: curl --fail --insecure https://localhost/typescript-service/ping
+              run: curl --fail --insecure https://localhost:443/typescript-service/ping

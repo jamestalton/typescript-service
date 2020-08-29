@@ -2,9 +2,9 @@ apiVersion: v1
 kind: Service
 metadata:
     name: $NAME
+    namespace: $NAMESPACE
     labels:
         app: $NAME
-    namespace: $NAMESPACE
 spec:
     ports:
         - port: $PORT
