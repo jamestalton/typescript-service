@@ -75,7 +75,7 @@ jobs:
               if: env.SKIP != '1'
               id: buildx_args
               run: |
-                  echo ::set-output name=buildx_args::--platform linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le \
+                  echo ::set-output name=buildx_args::--platform linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x \
                   --build-arg VERSION=${VERSION} \
                   --tag ${{ secrets.DOCKER_REGISTRY }}/${IMAGE}:${VERSION} \
                   --tag ${{ secrets.DOCKER_REGISTRY }}/${IMAGE}:latest \
@@ -91,11 +91,11 @@ jobs:
                       --output "type=image,push=false" \
                       ${{ steps.buildx_args.outputs.buildx_args }}
 
-            - name: Trivy and Dockle Image Scan
-              if: github.event_name != 'pull_request' && env.SKIP != '1'
-              uses: azure/container-scan@v0
-              with:
-                  image-name: ${{ secrets.DOCKER_REGISTRY }}/${{ env.IMAGE }}:${{ env.VERSION }}
+            # - name: Trivy and Dockle Image Scan
+            #   if: github.event_name != 'pull_request' && env.SKIP != '1'
+            #   uses: azure/container-scan@v0
+            #   with:
+            #       image-name: ${{ secrets.DOCKER_REGISTRY }}/${{ env.IMAGE }}:${{ env.VERSION }}
 
             - name: Anchore Image Scan
               if: github.event_name != 'pull_request' && env.SKIP != '1'
