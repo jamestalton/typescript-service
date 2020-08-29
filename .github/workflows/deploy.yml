@@ -71,12 +71,13 @@ jobs:
             - name: Failure - Rollback deployment
               if: ${{ failure() }}
               run: |
+                  echo ---------------------------------------------------------------
                   echo POD DETAILS
                   kubectl --namespace=${{ env.NAMESPACE }} --selector=app=${{ env.NAME }},version=${{ env.VERSION }} describe pods
-                  echo --------
+                  echo ---------------------------------------------------------------
                   echo POD LOGS
                   kubectl --namespace=${{ env.NAMESPACE }} --selector=app=${{ env.NAME }},version=${{ env.VERSION }} logs
-                  echo --------
+                  echo ---------------------------------------------------------------
                   echo ROLLBACK
                   kubectl rollout undo --namespace=${{ env.NAMESPACE }} deployment/${{ env.NAME }} | true
 
@@ -97,27 +98,28 @@ jobs:
 
             - name: Show namespace details
               run: |
+                  echo ---------------------------------------------------------------
                   echo INGRESSES
                   kubectl get ingress -n ${{ env.NAMESPACE }}
-                  echo --------
+                  echo ---------------------------------------------------------------
                   echo SERVICES
                   kubectl get services -n ${{ env.NAMESPACE }}
-                  echo --------
+                  echo ---------------------------------------------------------------
                   echo DEPLOYMENTS
                   kubectl get deployments -n ${{ env.NAMESPACE }}
-                  echo --------
+                  echo ---------------------------------------------------------------
                   echo REPLICA SETS
                   kubectl get rs -n ${{ env.NAMESPACE }}
-                  echo --------
+                  echo ---------------------------------------------------------------
                   echo PODS
                   kubectl get pods -n ${{ env.NAMESPACE }}
-                  echo --------
+                  echo ---------------------------------------------------------------
                   echo AUTOSCALERS
                   kubectl get hpa -n ${{ env.NAMESPACE }}
-                  echo --------
+                  echo ---------------------------------------------------------------
                   echo CONFIGMAPS
                   kubectl get configmaps -n ${{ env.NAMESPACE }}
-                  echo --------
+                  echo ---------------------------------------------------------------
                   echo SECRETS
                   kubectl get secrets -n ${{ env.NAMESPACE }}
 
@@ -125,4 +127,6 @@ jobs:
               run: kubectl --namespace=${{ env.NAMESPACE }} --selector=app=${{ env.NAME }},version=${{ env.VERSION }} logs
 
             - name: Test Service
-              run: curl --fail --insecure https://localhost:443/typescript-service/ping
+              run: |
+                  IP=`kubectl get service traefik -n kube-system -o json | jq -r .status.loadBalancer.ingress[0].ip`
+                  curl -ikf https://${IP}/typescript-service/ping
