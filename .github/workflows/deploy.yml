@@ -1,0 +1,81 @@
+name: deploy
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+
+        strategy:
+            matrix:
+                k8s_version: [v1.18.2-k3s1]
+
+        env:
+            APP_NAMESPACE: typescript-server
+            APP_NAME: typescript-server
+            APP_VERSION: latest
+            APP_IMAGE: ${{ secrets.DOCKER_REGISTRY }}/${{ env.APP_NAME }}:${{ env.APP_VERSION }}
+
+        steps:
+            - name: Set up k3s cluster
+              uses: debianmaster/actions-k3s@master
+              with:
+                  version: ${{ matrix.k8s_version }}
+
+            # - uses: azure/k8s-set-context@v1
+            #   with:
+            #     method: kubeconfig
+            #     kubeconfig: <your kubeconfig>
+            #     context: <context name>
+
+            - uses: Azure/k8s-create-secret@v1
+              if: github.event_name != 'pull_request' && env.SKIP != '1'
+              with:
+                  container-registry-username: ${{ secrets.DOCKER_USERNAME }}
+                  container-registry-password: ${{ secrets.DOCKER_TOKEN }}
+                  secret-name: docker-secret
+
+            - name: Configure Deployment
+              if: github.event_name != 'pull_request' && env.SKIP != '1'
+              env:
+                  APP_REPLICAS: 1
+                  APP_INGRESS_PATH: /typescript-service
+              run: |
+                  cat deploy/secret.yaml | envsubst > secret.yaml
+                  cat deploy/deployment.yaml | envsubst > deployment.yaml
+                  cat deploy/service.yaml | envsubst > service.yaml
+                  cat deploy/ingress.yaml | envsubst > ingress.yaml
+
+            - name: Show deployment
+              run: cat deployment.yaml
+
+            - name: Create namespace
+              run: kubectl create namespace typescript-service | true
+
+            - name: Create deployment
+              run: kubectl apply -f deployment.yaml
+
+            - name: Wait for deployment rollout
+              run: kubectl rollout status -w --timeout=30s deployment/${IMAGE}
+
+            - name: Describe Pods
+              if: ${{ failure() }}
+              run: kubectl --namespace=${{ env.APP_NAMESPACE }} --selector=app=${{ env.APP_NAME }},version=${{ env.VERSION }} describe pods
+
+            - name: Pod Logs
+              if: ${{ failure() }}
+              run: kubectl --namespace=${{ env.APP_NAMESPACE }} --selector=app=${{ env.APP_NAME }},version=${{ env.VERSION }} logs
+
+            - name: Rollback deployment
+              if: ${{ failure() }}
+              run: kubectl rollout undo deployment/${{ env.IMAGE }} | true
+
+            # - name: Autoscale deployment
+            #   run: kubectl --namespace=$APP_NAMESPACE autoscale deployment $APP_NAME --cpu-percent=$APP_AUTOSCALE_PERCENT --min=$APP_AUTOSCALE_MIN --max=$APP_AUTOSCALE_MAX
+
+            - name: Create service
+              run: kubectl apply -f service.yaml
+
+            - name: Create ingress
+              run: kubectl apply -f ingress.yaml
+
+            - name: Kubernetes Test
+              run: kubectl get all -n ${{ env.APP_NAMESPACE }}
