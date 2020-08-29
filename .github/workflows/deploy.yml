@@ -16,6 +16,10 @@ jobs:
             APP_VERSION: ${{ github.event.client_payload.version }}
 
         steps:
+            - uses: actions/checkout@v2
+              with:
+                  ref: ${{ github.event.client_payload.ref }}
+
             - name: Set up k3s cluster
               uses: debianmaster/actions-k3s@master
               with:
