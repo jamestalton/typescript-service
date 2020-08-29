@@ -14,12 +14,12 @@ jobs:
         steps:
             - uses: actions/checkout@v2
 
-            - name: Setup Git
+            - name: Set up Git
               run: |
                   git config --global user.name "${GITHUB_ACTOR}"
                   git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
 
-            - name: Setup Node.js 12.x
+            - name: Set up Node.js 12.x
               if: github.event_name != 'pull_request'
               uses: actions/setup-node@v1
               with:
@@ -56,11 +56,11 @@ jobs:
               if: env.SKIP != '1'
               run: npm test
 
-            - name: Lint
+            - name: Linting Checks
               if: env.SKIP != '1'
               run: npm run lint
 
-            - name: Code Formatting Check
+            - name: Code Formatting Checks
               if: env.SKIP != '1'
               run: npm run check
 
@@ -183,6 +183,11 @@ jobs:
                   cat deploy/deployment.yaml | envsubst > deployment.yaml
                   cat deploy/service.yaml | envsubst > service.yaml
                   cat deploy/ingress.yaml | envsubst > ingress.yaml
+
+            - name: Create namespace
+              if: github.event_name != 'pull_request' && env.SKIP != '1'
+              run: |
+                  kubectl create namespace typescript-service | true
 
             - name: Deploy to Kubernetes cluster
               uses: Azure/k8s-deploy@v1.1.0
