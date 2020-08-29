@@ -68,7 +68,7 @@ jobs:
             - name: Wait for deployment rollout
               run: kubectl rollout status -w --timeout=30s --namespace=${{ env.NAMESPACE }} deployment/${{ env.NAME }}
 
-            - name: Failure - Rollback deployment
+            - name: Rollback on deployment failure
               if: ${{ failure() }}
               run: |
                   echo ---------------------------------------------------------------
@@ -122,6 +122,8 @@ jobs:
                   echo ---------------------------------------------------------------
                   echo SECRETS
                   kubectl get secrets -n ${{ env.NAMESPACE }}
+                  echo ---------------------------------------------------------------
+                  kubectl get services -A
 
             - name: Show service logs
               run: kubectl --namespace=${{ env.NAMESPACE }} --selector=app=${{ env.NAME }},version=${{ env.VERSION }} logs
