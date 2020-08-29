@@ -14,7 +14,6 @@ jobs:
             APP_NAMESPACE: typescript-service
             APP_NAME: typescript-service
             APP_VERSION: ${{ github.event.client_payload.version }}
-            APP_IMAGE: ${{ secrets.DOCKER_REGISTRY }}/${{ env.APP_NAME }}:${{ env.APP_VERSION }}
 
         steps:
             - name: Set up k3s cluster
@@ -40,6 +39,7 @@ jobs:
               env:
                   APP_REPLICAS: 1
                   APP_INGRESS_PATH: /typescript-service
+                  APP_IMAGE: ${{ secrets.DOCKER_REGISTRY }}/${{ env.APP_NAME }}:${{ env.APP_VERSION }}
               run: |
                   cat deploy/secret.yaml | envsubst > secret.yaml
                   cat deploy/deployment.yaml | envsubst > deployment.yaml

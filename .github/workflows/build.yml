@@ -41,10 +41,10 @@ jobs:
               if: github.event_name != 'pull_request' && env.SKIP != '1'
               run: |
                   npm version patch
-                  IMAGE=`cat package.json | jq -r .name`
+                  NAME=`cat package.json | jq -r .name`
                   VERSION=v`cat package.json | jq -r .version`
                   echo "::set-env name=VERSION::${VERSION}"
-                  echo "::set-env name=IMAGE::${IMAGE}"
+                  echo "::set-env name=NAME::${NAME}"
 
             - name: Install Dependencies
               if: env.SKIP != '1'
@@ -83,8 +83,8 @@ jobs:
               run: |
                   echo ::set-output name=buildx_args::--platform linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x \
                   --build-arg VERSION=${VERSION} \
-                  --tag ${{ secrets.DOCKER_REGISTRY }}/${IMAGE}:${VERSION} \
-                  --tag ${{ secrets.DOCKER_REGISTRY }}/${IMAGE}:latest \
+                  --tag ${{ secrets.DOCKER_REGISTRY }}/${NAME}:${VERSION} \
+                  --tag ${{ secrets.DOCKER_REGISTRY }}/${NAME}:latest \
                   .
 
             - name: Docker Build
@@ -121,19 +121,19 @@ jobs:
             # - name: Inspect image
             #   if: github.event_name != 'pull_request' && env.SKIP != '1'
             #   run: |
-            #       docker buildx imagetools inspect ${{ secrets.DOCKER_REGISTRY }}/${IMAGE}:${VERSION}
+            #       docker buildx imagetools inspect ${{ secrets.DOCKER_REGISTRY }}/${{ env.NAME }}:${{ env.VERSION }}
 
             # - name: Trivy and Dockle Image Scan
             #   if: github.event_name != 'pull_request' && env.SKIP != '1'
             #   uses: azure/container-scan@v0
             #   with:
-            #       image-name: ${{ secrets.DOCKER_REGISTRY }}/${{ env.IMAGE }}:${{ env.VERSION }}
+            #       image-name: ${{ secrets.DOCKER_REGISTRY }}/${{ env.NAME }}:${{ env.VERSION }}
 
             # - name: Anchore Image Scan
             #   if: github.event_name != 'pull_request' && env.SKIP != '1'
             #   uses: anchore/scan-action@v1
             #   with:
-            #       image-reference: ${{ secrets.DOCKER_REGISTRY }}/${{ env.IMAGE }}:${{ env.VERSION }}
+            #       image-reference: ${{ secrets.DOCKER_REGISTRY }}/${{ env.NAME }}:${{ env.VERSION }}
             #       fail-build: true
 
             - name: Repository Dispatch
