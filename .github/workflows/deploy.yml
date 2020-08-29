@@ -79,6 +79,12 @@ jobs:
             - name: Autoscale deployment
               run: kubectl --namespace=${{ env.NAMESPACE }} autoscale deployment ${{ env.NAME }} --cpu-percent=10000 --min=1 --max=2
 
+            - name: Cleanup old resources
+              run: |
+                  kubectl delete rs --namespace=${{ env.NAMESPACE }} -l app=${{ env.NAME }},version!=${{ env.VERSION }}
+                  kubectl delete configmap --namespace=${{ env.NAMESPACE }} -l app=${{ env.NAME }},version!=${{ env.VERSION }}
+                  kubectl delete secret --namespace=${{ env.NAMESPACE }} -l app=${{ env.NAME }},version!=${{ env.VERSION }}
+
             - name: Create service
               run: kubectl apply -f service.yaml
 
@@ -87,9 +93,32 @@ jobs:
 
             - name: Show namespace details
               run: |
-                  kubectl get all -n ${{ env.NAMESPACE }}
-                  kubectl get all -n ${{ env.NAMESPACE }}
-                  kubectl get all -n ${{ env.NAMESPACE }}
+                  echo INGRESSES
+                  kubectl get ingress -n ${{ env.NAMESPACE }}
+                  echo --------
+                  echo SERVICES
+                  kubectl get services -n ${{ env.NAMESPACE }}
+                  echo --------
+                  echo DEPLOYMENTS
+                  kubectl get deployments -n ${{ env.NAMESPACE }}
+                  echo --------
+                  echo REPLICA SETS
+                  kubectl get rs -n ${{ env.NAMESPACE }}
+                  echo --------
+                  echo PODS
+                  kubectl get pods -n ${{ env.NAMESPACE }}
+                  echo --------
+                  echo AUTOSCALERS
+                  kubectl get hpa -n ${{ env.NAMESPACE }}
+                  echo --------
+                  echo CONFIGMAPS
+                  kubectl get configmaps -n ${{ env.NAMESPACE }}
+                  echo --------
+                  echo SECRETS
+                  kubectl get secrets -n ${{ env.NAMESPACE }}
+
+            - name: Show service logs
+              run: kubectl --namespace=${{ env.NAMESPACE }} --selector=app=${{ env.NAME }},version=${{ env.VERSION }} logs
 
             - name: Test Service
-              run: curl --fail http://localhost/typescript-service/ping
+              run: curl --fail --insecure https://localhost/typescript-service/ping
