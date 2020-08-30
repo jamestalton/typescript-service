@@ -28,13 +28,11 @@ spec:
                   env:
                       - name: PORT
                         value: '$PORT'
-
-                  # envFrom:
-                  #     - configMapRef:
-                  #           name: $NAME
-                  #     - secretRef:
-                  #           name: $NAME
-
+                  envFrom:
+                      - configMapRef:
+                            name: $NAME-$VERSION
+                      - secretRef:
+                            name: $NAME-$VERSION
                   resources:
                       requests:
                           memory: 64Mi
@@ -53,25 +51,6 @@ spec:
                       timeoutSeconds: 1
                       successThreshold: 1
                       failureThreshold: 1
-
-
-                  # volumeMounts:
-                  #     - name: token-public-key
-                  #       mountPath: /certs/token-public-key.pem
-                  #       subPath: token-public-key.pem
-                  #       readOnly: true
-                  #     - name: token-private-key
-                  #       mountPath: /certs/token-private-key.pem
-                  #       subPath: token-private-key.pem
-                  #       readOnly: true
-
-            # volumes:
-            #     - name: token-public-key
-            #       configMap:
-            #           name: token-public-key
-            #     - name: token-private-key
-            #       secret:
-            #           secretName: token-private-key
 
             imagePullSecrets:
                 - name: regcred
