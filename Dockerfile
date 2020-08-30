@@ -7,15 +7,18 @@ COPY . /app/
 RUN npm run build
 RUN rm -rf node_modules
 RUN npm ci --only=production
+RUN npm i pino-pretty
 
 FROM --platform=${TARGETPLATFORM:-linux/amd64} node:12-alpine
+RUN apk add --no-cache bash
 USER node
 ENV NODE_ENV production
 WORKDIR /app
 HEALTHCHECK --interval=10s --timeout=1s --start-period=1s --retries=3 \  
     CMD node /app/lib/health-check.js
+COPY entrypoint.sh .
 COPY --from=builder /app/node_modules /app/node_modules
 COPY --from=builder /app/lib /app/
 ARG VERSION
 ENV VERSION $VERSION
-CMD ["node", "main.js"]
+CMD ["./entrypoint.sh"]
