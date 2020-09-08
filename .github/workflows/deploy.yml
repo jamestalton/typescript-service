@@ -63,7 +63,7 @@ jobs:
                   kubectl apply -f deployment.yaml
 
             - name: Wait for deployment rollout
-              run: kubectl rollout status -w --timeout=30s --namespace=${{ env.NAMESPACE }} deployment/${{ env.NAME }}
+              run: kubectl rollout status -w --timeout=60s --namespace=${{ env.NAMESPACE }} deployment/${{ env.NAME }}
 
             - name: Rollback on deployment failure
               if: ${{ failure() }}
