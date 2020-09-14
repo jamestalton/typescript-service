@@ -130,125 +130,106 @@ jobs:
               with:
                   image-reference: ${{ secrets.DOCKER_REGISTRY }}/${{ env.NAME }}:${{ env.VERSION }}
                   fail-build: true
-
-    deploy:
-        runs-on: ubuntu-latest
-        needs: build
-        if: github.event_name == 'push'
-
-        strategy:
-            matrix:
-                k8s_version: [v1.18.2-k3s1]
-
-        env:
-            NAME: typescript-service
-            NAMESPACE: typescript-service
-            PORT: 3000
-            VERSION: ${{ github.event.client_payload.version }}
-
-        steps:
-            - uses: actions/checkout@v2
-              with:
-                  ref: ${{ github.event.client_payload.ref }}
-
-            - name: Set up k3s cluster
-              uses: debianmaster/actions-k3s@master
-              with:
-                  version: ${{ matrix.k8s_version }}
-
-            # - uses: azure/k8s-set-context@v1
-            #   with:
-            #     method: kubeconfig
-            #     kubeconfig: <your kubeconfig>
-            #     context: <context name>
-
-            - uses: Azure/k8s-create-secret@v1
-              with:
-                  container-registry-username: ${{ secrets.DOCKER_USERNAME }}
-                  container-registry-password: ${{ secrets.DOCKER_TOKEN }}
-                  secret-name: docker-secret
-
-            - name: Configure Deployment
-              env:
-                  IMAGE: ${{ secrets.DOCKER_REGISTRY }}/${{ env.NAME }}:${{ env.VERSION }}
-                  REPLICAS: 1
-                  INGRESS_PATH: /${{ env.NAME }}
-              run: |
-                  cat deploy/configmap.yaml | envsubst > configmap.yaml
-                  cat deploy/secret.yaml | envsubst > secret.yaml
-                  cat deploy/deployment.yaml | envsubst > deployment.yaml
-                  cat deploy/service.yaml | envsubst > service.yaml
-                  cat deploy/ingress.yaml | envsubst > ingress.yaml
-
-            - name: Create namespace
-              run: kubectl create namespace typescript-service | true
-
-            - name: Remove autoscaler
-              run: kubectl --namespace=${{ env.NAMESPACE }} get hpa ${{ env.NAME }} | true
-
-            - name: Create deployment
-              run: |
-                  kubectl apply -f configmap.yaml
-                  kubectl apply -f secret.yaml
-                  kubectl apply -f deployment.yaml
-
-            - name: Wait for deployment rollout
-              run: kubectl rollout status -w --timeout=30s --namespace=${{ env.NAMESPACE }} deployment/${{ env.NAME }}
-
-            - name: Rollback on deployment failure
-              if: ${{ failure() }}
-              run: |
-                  echo ---------------------------------------------------------------
-                  echo POD DETAILS
-                  kubectl --namespace=${{ env.NAMESPACE }} --selector=app=${{ env.NAME }},version=${{ env.VERSION }} describe pods
-                  echo ---------------------------------------------------------------
-                  echo POD LOGS
-                  kubectl --namespace=${{ env.NAMESPACE }} --selector=app=${{ env.NAME }},version=${{ env.VERSION }} logs
-                  echo ---------------------------------------------------------------
-                  echo ROLLBACK
-                  kubectl rollout undo --namespace=${{ env.NAMESPACE }} deployment/${{ env.NAME }} | true
-
-            - name: Autoscale deployment
-              run: kubectl --namespace=${{ env.NAMESPACE }} autoscale deployment ${{ env.NAME }} --cpu-percent=9000 --min=1 --max=2
-
-            - name: Cleanup old resources
-              run: |
-                  kubectl delete rs --namespace=${{ env.NAMESPACE }} -l app=${{ env.NAME }},version!=${{ env.VERSION }}
-                  kubectl delete configmap --namespace=${{ env.NAMESPACE }} -l app=${{ env.NAME }},version!=${{ env.VERSION }}
-                  kubectl delete secret --namespace=${{ env.NAMESPACE }} -l app=${{ env.NAME }},version!=${{ env.VERSION }}
-
-            - name: Create service
-              run: kubectl apply -f service.yaml
-
-            - name: Create ingress
-              run: kubectl apply -f ingress.yaml
-
-            - name: Show namespace details
-              run: |
-                  echo ---------------------------------------------------------------
-                  echo INGRESSES
-                  kubectl get ingress -n ${{ env.NAMESPACE }}
-                  echo ---------------------------------------------------------------
-                  echo SERVICES
-                  kubectl get services -n ${{ env.NAMESPACE }}
-                  echo ---------------------------------------------------------------
-                  echo DEPLOYMENTS
-                  kubectl get deployments -n ${{ env.NAMESPACE }}
-                  echo ---------------------------------------------------------------
-                  echo REPLICA SETS
-                  kubectl get rs -n ${{ env.NAMESPACE }}
-                  echo ---------------------------------------------------------------
-                  echo PODS
-                  kubectl get pods -n ${{ env.NAMESPACE }}
-                  echo ---------------------------------------------------------------
-                  echo AUTOSCALERS
-                  kubectl get hpa -n ${{ env.NAMESPACE }}
-                  echo ---------------------------------------------------------------
-                  echo CONFIGMAPS
-                  kubectl get configmaps -n ${{ env.NAMESPACE }}
-                  echo ---------------------------------------------------------------
-                  echo SECRETS
-                  kubectl get secrets -n ${{ env.NAMESPACE }}
-
-            - name: Show service logs
-              run: kubectl --namespace=${{ env.NAMESPACE }} --selector=app=${{ env.NAME }},version=${{ env.VERSION }} logs
+    # deploy:
+    #     runs-on: ubuntu-latest
+    #     needs: build
+    #     if: github.event_name == 'push'
+    #     strategy:
+    #         matrix:
+    #             k8s_version: [v1.18.2-k3s1]
+    #     env:
+    #         NAME: typescript-service
+    #         NAMESPACE: typescript-service
+    #         PORT: 3000
+    #         VERSION: ${{ github.event.client_payload.version }}
+    #     steps:
+    #         - uses: actions/checkout@v2
+    #           with:
+    #               ref: ${{ github.event.client_payload.ref }}
+    #         - name: Set up k3s cluster
+    #           uses: debianmaster/actions-k3s@master
+    #           with:
+    #               version: ${{ matrix.k8s_version }}
+    #         # - uses: azure/k8s-set-context@v1
+    #         #   with:
+    #         #     method: kubeconfig
+    #         #     kubeconfig: <your kubeconfig>
+    #         #     context: <context name>
+    #         - uses: Azure/k8s-create-secret@v1
+    #           with:
+    #               container-registry-username: ${{ secrets.DOCKER_USERNAME }}
+    #               container-registry-password: ${{ secrets.DOCKER_TOKEN }}
+    #               secret-name: docker-secret
+    #         - name: Configure Deployment
+    #           env:
+    #               IMAGE: ${{ secrets.DOCKER_REGISTRY }}/${{ env.NAME }}:${{ env.VERSION }}
+    #               REPLICAS: 1
+    #               INGRESS_PATH: /${{ env.NAME }}
+    #           run: |
+    #               cat deploy/configmap.yaml | envsubst > configmap.yaml
+    #               cat deploy/secret.yaml | envsubst > secret.yaml
+    #               cat deploy/deployment.yaml | envsubst > deployment.yaml
+    #               cat deploy/service.yaml | envsubst > service.yaml
+    #               cat deploy/ingress.yaml | envsubst > ingress.yaml
+    #         - name: Create namespace
+    #           run: kubectl create namespace typescript-service | true
+    #         - name: Remove autoscaler
+    #           run: kubectl --namespace=${{ env.NAMESPACE }} get hpa ${{ env.NAME }} | true
+    #         - name: Create deployment
+    #           run: |
+    #               kubectl apply -f configmap.yaml
+    #               kubectl apply -f secret.yaml
+    #               kubectl apply -f deployment.yaml
+    #         - name: Wait for deployment rollout
+    #           run: kubectl rollout status -w --timeout=30s --namespace=${{ env.NAMESPACE }} deployment/${{ env.NAME }}
+    #         - name: Rollback on deployment failure
+    #           if: ${{ failure() }}
+    #           run: |
+    #               echo ---------------------------------------------------------------
+    #               echo POD DETAILS
+    #               kubectl --namespace=${{ env.NAMESPACE }} --selector=app=${{ env.NAME }},version=${{ env.VERSION }} describe pods
+    #               echo ---------------------------------------------------------------
+    #               echo POD LOGS
+    #               kubectl --namespace=${{ env.NAMESPACE }} --selector=app=${{ env.NAME }},version=${{ env.VERSION }} logs
+    #               echo ---------------------------------------------------------------
+    #               echo ROLLBACK
+    #               kubectl rollout undo --namespace=${{ env.NAMESPACE }} deployment/${{ env.NAME }} | true
+    #         - name: Autoscale deployment
+    #           run: kubectl --namespace=${{ env.NAMESPACE }} autoscale deployment ${{ env.NAME }} --cpu-percent=9000 --min=1 --max=2
+    #         - name: Cleanup old resources
+    #           run: |
+    #               kubectl delete rs --namespace=${{ env.NAMESPACE }} -l app=${{ env.NAME }},version!=${{ env.VERSION }}
+    #               kubectl delete configmap --namespace=${{ env.NAMESPACE }} -l app=${{ env.NAME }},version!=${{ env.VERSION }}
+    #               kubectl delete secret --namespace=${{ env.NAMESPACE }} -l app=${{ env.NAME }},version!=${{ env.VERSION }}
+    #         - name: Create service
+    #           run: kubectl apply -f service.yaml
+    #         - name: Create ingress
+    #           run: kubectl apply -f ingress.yaml
+    #         - name: Show namespace details
+    #           run: |
+    #               echo ---------------------------------------------------------------
+    #               echo INGRESSES
+    #               kubectl get ingress -n ${{ env.NAMESPACE }}
+    #               echo ---------------------------------------------------------------
+    #               echo SERVICES
+    #               kubectl get services -n ${{ env.NAMESPACE }}
+    #               echo ---------------------------------------------------------------
+    #               echo DEPLOYMENTS
+    #               kubectl get deployments -n ${{ env.NAMESPACE }}
+    #               echo ---------------------------------------------------------------
+    #               echo REPLICA SETS
+    #               kubectl get rs -n ${{ env.NAMESPACE }}
+    #               echo ---------------------------------------------------------------
+    #               echo PODS
+    #               kubectl get pods -n ${{ env.NAMESPACE }}
+    #               echo ---------------------------------------------------------------
+    #               echo AUTOSCALERS
+    #               kubectl get hpa -n ${{ env.NAMESPACE }}
+    #               echo ---------------------------------------------------------------
+    #               echo CONFIGMAPS
+    #               kubectl get configmaps -n ${{ env.NAMESPACE }}
+    #               echo ---------------------------------------------------------------
+    #               echo SECRETS
+    #               kubectl get secrets -n ${{ env.NAMESPACE }}
+    #         - name: Show service logs
+    #           run: kubectl --namespace=${{ env.NAMESPACE }} --selector=app=${{ env.NAME }},version=${{ env.VERSION }} logs
