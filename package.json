@@ -35,7 +35,7 @@
         "jest": "^26.x.x",
         "nock": "^13.0.4",
         "pino-pretty": "^4.2.1",
-        "prettier": "^2.1.1",
+        "prettier": "^2.1.2",
         "ts-jest": "^26.x.x",
         "ts-node": "^9.0.0",
         "ts-node-dev": "^1.0.0-pre.62",
