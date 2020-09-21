@@ -20,7 +20,7 @@
         "docker:stop": "docker rm -f app || true"
     },
     "dependencies": {
-        "@types/pino": "^6.3.0",
+        "@types/pino": "^6.3.1",
         "pino": "^6.6.1"
     },
     "devDependencies": {
