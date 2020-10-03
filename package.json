@@ -13,7 +13,7 @@
         "check": "prettier --check **/*.ts **/*.json !coverage/** !lib/** !**/package-lock.json",
         "check:fix": "prettier --write **/*.ts **/*.json !coverage/** !lib/** !**/package-lock.json",
         "start": "PORT=3000 ts-node-dev --no-notify --no-deps --respawn --transpile-only src/main.ts | pino-pretty -i time,instance",
-        "update": "rm -rf package-lock.json node_modules && npx npm-check-updates -u && npm install && npm audit fix && npm test && npm run lint && npm run check",
+        "update": "rm -rf package-lock.json node_modules && npx npm-check-updates -u && npm install && npm audit fix && npm dedup && npm test && npm run lint && npm run check",
         "docker:build": "docker build --pull --tag app .",
         "docker:run": "npm run docker:build && docker run --rm -t --name app -p 3000:3000 -e PORT=3000 app | ./node_modules/.bin/pino-pretty -i time,instance",
         "docker:start": "npm run docker:build && docker run -d --name app -p 3000:3000 -e PORT=3000 app",
@@ -60,6 +60,7 @@
             }
         },
         "coverageReporters": [
+            "text",
             "text-summary",
             "html"
         ],
