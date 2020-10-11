@@ -75,6 +75,10 @@ jobs:
                   username: ${{ secrets.DOCKER_USERNAME }}
                   password: ${{ secrets.DOCKER_TOKEN }}
 
+            - name: Enable Docker Content Trust
+              if: github.event_name != 'pull_request' && env.SKIP != '1'
+              run: echo "DOCKER_CONTENT_TRUST=1" >> $GITHUB_ENV
+
             - name: Docker Build
               if: env.SKIP != '1'
               run: |
