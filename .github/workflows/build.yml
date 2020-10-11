@@ -83,7 +83,7 @@ jobs:
               if: env.SKIP != '1'
               id: buildx_args
               run: |
-                  echo ::set-output name=buildx_args::--platform linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x \
+                  echo ::set-output name=buildx_args::--platform linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x \
                   --build-arg VERSION=${{ env.VERSION }} \
                   --tag ${{ secrets.DOCKER_REGISTRY }}/${{ env.NAME }}:${{ env.VERSION }} \
                   --tag ${{ secrets.DOCKER_REGISTRY }}/${{ env.NAME }}:latest \
