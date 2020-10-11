@@ -7,7 +7,7 @@ COPY . /app/
 RUN npm run build
 RUN rm -rf node_modules
 RUN npm ci --only=production
-RUN npm i pino-pretty
+RUN npm i pino-zen
 
 FROM --platform=${TARGETPLATFORM:-linux/amd64} node:12-alpine
 RUN apk add --no-cache bash
