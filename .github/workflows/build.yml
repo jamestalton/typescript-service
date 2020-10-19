@@ -96,18 +96,18 @@ jobs:
                   git push
                   git push origin ${{ env.VERSION }}
 
-            - name: Trivy and Dockle Image Scan
-              if: github.event_name != 'pull_request' && env.SKIP != '1'
-              uses: azure/container-scan@v0
-              with:
-                  image-name: ${{ secrets.DOCKER_REGISTRY }}/${{ env.NAME }}:${{ env.VERSION }}
+            # - name: Trivy and Dockle Image Scan
+            #   if: github.event_name != 'pull_request' && env.SKIP != '1'
+            #   uses: azure/container-scan@v0
+            #   with:
+            #       image-name: ${{ secrets.DOCKER_REGISTRY }}/${{ env.NAME }}:${{ env.VERSION }}
 
-            - name: Anchore Image Scan
-              if: github.event_name != 'pull_request' && env.SKIP != '1'
-              uses: anchore/scan-action@v1
-              with:
-                  image-reference: ${{ secrets.DOCKER_REGISTRY }}/${{ env.NAME }}:${{ env.VERSION }}
-                  fail-build: true
+            # - name: Anchore Image Scan
+            #   if: github.event_name != 'pull_request' && env.SKIP != '1'
+            #   uses: anchore/scan-action@v1
+            #   with:
+            #       image-reference: ${{ secrets.DOCKER_REGISTRY }}/${{ env.NAME }}:${{ env.VERSION }}
+            #       fail-build: true
     # deploy:
     #     runs-on: ubuntu-latest
     #     needs: build
