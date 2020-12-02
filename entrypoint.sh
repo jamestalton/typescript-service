@@ -17,7 +17,7 @@ trap 'echo; kill ${!}; term_handler' SIGINT
 
 # the redirection trick makes sure that $! is the pid
 # of the "node build/index.js" process
-node main.js > >(./node_modules/.bin/pino-zen -t) &
+node main.js > >(./node_modules/.bin/pino-zen) &
 pid="$!"
 
 # wait forever
