@@ -21,7 +21,7 @@
     },
     "dependencies": {
         "@types/pino": "^6.3.5",
-        "pino": "^6.10.0"
+        "pino": "^6.11.0"
     },
     "devDependencies": {
         "@types/jest": "^26.x.x",
@@ -29,7 +29,7 @@
         "@typescript-eslint/eslint-plugin": "^4.13.0",
         "@typescript-eslint/parser": "^4.13.0",
         "axios": "^0.21.1",
-        "eslint": "^7.17.0",
+        "eslint": "^7.18.0",
         "eslint-config-prettier": "^7.1.0",
         "eslint-plugin-prettier": "^3.3.1",
         "jest": "^26.x.x",
