@@ -6,29 +6,31 @@
     "license": "UNLICENSED",
     "private": true,
     "scripts": {
+        "postinstall": "[ ! -d ./certs ] && npm run generate-certs || true",
         "build": "tsc --build --clean && tsc",
         "test": "jest --verbose",
         "lint": "eslint src test --ext .ts --max-warnings=0",
         "lint:fix": "eslint src test --ext .ts --fix",
         "check": "prettier --check **/*.ts **/*.json !coverage/** !lib/** !**/package-lock.json",
         "check:fix": "prettier --write **/*.ts **/*.json !coverage/** !lib/** !**/package-lock.json",
-        "start": "PORT=3000 ts-node-dev --no-notify --no-deps --respawn --transpile-only src/main.ts | pino-zen -i time,instance",
+        "start": "PORT=3000 ts-node-dev --no-notify --no-deps --respawn --transpile-only src/lib/main.ts | pino-zen -i time,instance",
         "update": "rm -rf package-lock.json node_modules && npx npm-check-updates -u && npm install && npm audit fix && npm dedup && npm test && npm run lint && npm run check",
         "docker:build": "docker build --pull --tag app .",
         "docker:run": "npm run docker:build && docker run --rm -t --name app -p 3000:3000 -e PORT=3000 app",
         "docker:start": "npm run docker:build && docker run -d --name app -p 3000:3000 -e PORT=3000 app",
-        "docker:stop": "docker rm -f app || true"
+        "docker:stop": "docker rm -f app || true",
+        "generate-certs": "mkdir -p certs && openssl req -subj '/C=US' -new -newkey rsa:2048 -sha256 -days 365 -nodes -x509 -keyout certs/tls.key -out certs/tls.crt"
     },
     "dependencies": {
-        "@types/pino": "^6.3.5",
+        "find-my-way": "^3.0.5",
         "pino": "^6.10.0"
     },
     "devDependencies": {
         "@types/jest": "^26.x.x",
         "@types/node": "^14.x.x",
+        "@types/pino": "^6.3.5",
         "@typescript-eslint/eslint-plugin": "^4.12.0",
         "@typescript-eslint/parser": "^4.12.0",
-        "axios": "^0.21.1",
         "eslint": "^7.17.0",
         "eslint-config-prettier": "^7.1.0",
         "eslint-plugin-prettier": "^3.3.1",
@@ -48,6 +50,7 @@
         "singleQuote": true
     },
     "jest": {
+        "preset": "ts-jest",
         "testEnvironment": "node",
         "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
         "collectCoverage": true,
@@ -66,8 +69,7 @@
         ],
         "collectCoverageFrom": [
             "src/**/*.ts",
-            "!**/node_modules/**",
-            "!<rootDir>/src/typings.d.ts"
+            "!**/node_modules/**"
         ],
         "moduleFileExtensions": [
             "js",
@@ -79,9 +81,7 @@
         ],
         "setupFiles": [
             "<rootDir>/test/jest-setup.ts"
-        ],
-        "preset": "ts-jest",
-        "testMatch": null
+        ]
     },
     "eslintConfig": {
         "parser": "@typescript-eslint/parser",

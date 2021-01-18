@@ -1,5 +1,4 @@
-/node_modules
+/build
+/certs
 /coverage
-/lib
-*.log
-flamegraph.html
+/node_modules

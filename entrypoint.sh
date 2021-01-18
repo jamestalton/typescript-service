@@ -8,7 +8,8 @@ term_handler() {
     kill -SIGTERM "$pid"
     wait "$pid"
   fi
-  exit 143; # 128 + 15 -- SIGTERM
+  exit 0;
+  # exit 143; # 128 + 15 -- SIGTERM
 }
 
 # on SIGTERM or SIGINT kill the last background process and execute term_handler
@@ -17,7 +18,7 @@ trap 'echo; kill ${!}; term_handler' SIGINT
 
 # the redirection trick makes sure that $! is the pid
 # of the "node build/index.js" process
-node main.js > >(./node_modules/.bin/pino-zen) &
+node lib/main.js > >(./node_modules/.bin/pino-zen -i time,instance) &
 pid="$!"
 
 # wait forever

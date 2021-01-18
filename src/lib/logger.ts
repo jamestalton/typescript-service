@@ -5,21 +5,21 @@ import * as pino from 'pino'
 const options: pino.LoggerOptions = {
     safe: false,
     base: {
-        app: process.env.APP,
-        instance: process.pid,
-        region: process.env.REGION,
-        version: process.env.VERSION,
+        // app: process.env.APP,
+        // instance: process.pid,
+        // region: process.env.REGION,
+        // version: process.env.VERSION,
     },
     level: process.env.LOG_LEVEL ? process.env.LOG_LEVEL : 'debug',
     formatters: {
-        level(label: string, number: number) {
+        level(label: string, _number: number) {
             return { level: label }
         },
     },
 }
 
-let stream: pino.DestinationStream
-let timeout: NodeJS.Timeout
+let stream: pino.DestinationStream | undefined
+let timeout: NodeJS.Timeout | undefined
 if (process.env.NODE_ENV === 'production') {
     stream = pino.destination({ sync: false })
     timeout = setInterval(function loggerFlush() {
@@ -27,7 +27,7 @@ if (process.env.NODE_ENV === 'production') {
     }, 5 * 1000)
 }
 
-export const logger: pino.Logger = pino(options, stream)
+export const logger: pino.Logger = stream ? pino(options, stream) : pino(options)
 
 export function stopLogger(): void {
     if (timeout != undefined) {
@@ -35,10 +35,10 @@ export function stopLogger(): void {
         timeout = undefined
     }
     if (stream != undefined) {
-        pino.final(logger, (err, finalLogger, evt) => {
+        pino.final(logger, (err, finalLogger, _evt) => {
             if (err) finalLogger.error(err, 'error caused exit')
             finalLogger.flush()
-        })(undefined)
+        })(null)
         stream = undefined
     }
 }
@@ -51,9 +51,7 @@ switch (process.env.LOG_LEVEL) {
     case 'error':
     case 'fatal':
     case 'silent':
-        break
     case undefined:
-        logger.info({ msg: 'LOG_LEVEL not specified', level: 'debug' })
         break
     default:
         logger.info({ msg: 'Unknown LOG_LEVEL', level: process.env.LOG_LEVEL })

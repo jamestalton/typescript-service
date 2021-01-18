@@ -1,15 +1,15 @@
 /* eslint-disable no-console */
 /* eslint-disable no-process-exit */
 /* istanbul ignore file */
-import { request } from 'http'
+import { request } from 'https'
 
 request(
     {
         hostname: '0.0.0.0',
         port: process.env.PORT,
-        path: '/health',
+        path: '/ping',
         timeout: 1000,
-        // rejectUnauthorized: false,
+        rejectUnauthorized: false,
     },
     (res) => {
         if (res.statusCode == 200) {
