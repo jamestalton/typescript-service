@@ -22,15 +22,15 @@
         "generate-certs": "mkdir -p certs && openssl req -subj '/C=US' -new -newkey rsa:2048 -sha256 -days 365 -nodes -x509 -keyout certs/tls.key -out certs/tls.crt"
     },
     "dependencies": {
-        "find-my-way": "^3.0.5",
+        "find-my-way": "^4.0.0",
         "pino": "^6.11.0"
     },
     "devDependencies": {
         "@types/jest": "^26.x.x",
         "@types/node": "^14.x.x",
         "@types/pino": "^6.3.5",
-        "@typescript-eslint/eslint-plugin": "^4.14.2",
-        "@typescript-eslint/parser": "^4.14.2",
+        "@typescript-eslint/eslint-plugin": "^4.15.0",
+        "@typescript-eslint/parser": "^4.15.0",
         "eslint": "^7.19.0",
         "eslint-config-prettier": "^7.2.0",
         "eslint-plugin-prettier": "^3.3.1",
