@@ -1,8 +1,8 @@
-import { mockRequest } from '../mock-request'
+import { request } from '../mock-request'
 
 describe(`Ping Route`, function () {
     it(`GET /ping should return status code 200`, async function () {
-        const res = await mockRequest('GET', '/ping')
+        const res = await request('GET', '/ping')
         expect(res.statusCode).toEqual(200)
     })
 })

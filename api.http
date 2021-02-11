@@ -1,0 +1,22 @@
+@host = https://localhost:3000
+
+### Ping
+GET {{host}}/ping
+
+### Put Item
+PUT {{host}}/data/collection/1
+content-type: application/json
+
+{	
+	"name":"{{host}}"
+}
+
+### Get Item
+GET  {{host}}/data/collection/1
+
+### Delete Item
+DELETE {{host}}/data/collection/1
+
+
+### Get events
+GET  {{host}}/data/events

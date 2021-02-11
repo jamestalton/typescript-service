@@ -6,9 +6,6 @@ RUN npm run postinstall
 RUN npm ci
 COPY . /app/
 RUN npm run build
-RUN npm run test
-RUN npm run lint
-RUN npm run check
 RUN rm -rf node_modules
 RUN npm ci --only=production
 RUN npm i pino-zen

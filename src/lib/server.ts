@@ -116,10 +116,8 @@ export function startServer(options: ServerOptions): Promise<Http2Server | undef
                             const time = Math.round((diff[0] * 1e9 + diff[1]) / 10000) / 100
                             msg.ms = time
 
-                            if (res.statusCode < 400) {
+                            if (res.statusCode < 500) {
                                 logger.info(msg)
-                            } else if (res.statusCode < 500) {
-                                logger.warn(msg)
                             } else {
                                 logger.error(msg)
                             }

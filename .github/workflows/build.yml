@@ -27,7 +27,7 @@ jobs:
               if: github.event_name == 'schedule'
               run: |
                   rm -rf package-lock.json node_modules
-                  npx npm-check-updates -u
+                  npx npm-check-updates --doctor -u
                   npm install
                   npm audit fix
                   npm run lint:fix
