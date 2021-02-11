@@ -22,11 +22,11 @@
         "generate-certs": "mkdir -p certs && openssl req -subj '/C=US' -new -newkey rsa:2048 -sha256 -days 365 -nodes -x509 -keyout certs/tls.key -out certs/tls.crt"
     },
     "dependencies": {
-        "find-my-way": "^3.0.5",
+        "find-my-way": "^4.0.0",
         "leveldown": "^5.6.0",
         "levelup": "^4.4.0",
         "memdown": "^5.1.0",
-        "pino": "^6.11.0",
+        "pino": "^6.11.1",
         "raw-body": "^2.4.1"
     },
     "devDependencies": {
@@ -37,19 +37,19 @@
         "@types/node": "^14.x.x",
         "@types/pino": "^6.3.5",
         "@types/raw-body": "^2.3.0",
-        "@typescript-eslint/eslint-plugin": "^4.14.0",
-        "@typescript-eslint/parser": "^4.14.0",
-        "eslint": "^7.18.0",
+        "@typescript-eslint/eslint-plugin": "^4.15.0",
+        "@typescript-eslint/parser": "^4.15.0",
+        "eslint": "^7.19.0",
         "eslint-config-prettier": "^7.2.0",
         "eslint-plugin-prettier": "^3.3.1",
         "jest": "^26.x.x",
-        "nock": "^13.0.5",
+        "nock": "^13.0.7",
         "pino-zen": "^1.0.20",
         "prettier": "^2.2.1",
         "ts-jest": "^26.x.x",
         "ts-node": "^9.1.1",
         "ts-node-dev": "^1.1.1",
-        "typescript": "^4.1.3"
+        "typescript": "^4.1.5"
     },
     "prettier": {
         "printWidth": 120,
