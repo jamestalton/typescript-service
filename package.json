@@ -23,7 +23,7 @@
     },
     "dependencies": {
         "find-my-way": "^4.0.0",
-        "pino": "^6.11.1"
+        "pino": "^6.11.2"
     },
     "devDependencies": {
         "@types/jest": "^26.x.x",
