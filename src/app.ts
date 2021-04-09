@@ -7,6 +7,9 @@ import { stopLogger } from './lib/logger'
 import { startServer, stopServer } from './lib/server'
 import { pingRoute } from './routes/ping'
 
+export const router = Router<Router.HTTPVersion.V2>()
+router.get('/ping', pingRoute as Router.Handler<Router.HTTPVersion.V2>)
+
 export function start(): Promise<Server | Http2Server | undefined> {
     return startServer({ requestHandler })
 }
@@ -20,12 +23,10 @@ export async function requestHandler(req: Http2ServerRequest, res: Http2ServerRe
     handleCors(req, res)
 
     const route = router.find(req.method as Router.HTTPMethod, req.url)
-    if (route === null) return res.writeHead(404).end()
-    else {
+    if (route === null) {
+        return res.writeHead(404).end()
+    } else {
         const result: unknown = route.handler(req, res, route.params, route.store)
         if (result instanceof Promise) await result
     }
 }
-
-export const router = Router<Router.HTTPVersion.V2>()
-router.get('/ping', pingRoute as Router.Handler<Router.HTTPVersion.V2>)
