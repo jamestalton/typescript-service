@@ -1,12 +1,12 @@
 /* istanbul ignore file */
 
-import { Http2ServerRequest, Http2ServerResponse } from 'http2'
+import { Http2ServerRequest, Http2ServerResponse, constants } from 'http2'
 
 export function handleCors(req: Http2ServerRequest, res: Http2ServerResponse): void {
     if (process.env.NODE_ENV !== 'production') {
         if (req.headers['origin']) {
-            res.setHeader('Access-Control-Allow-Origin', req.headers['origin'])
-            res.setHeader('Vary', 'Origin, Access-Control-Allow-Origin')
+            res.setHeader(constants.HTTP2_HEADER_ACCESS_CONTROL_ALLOW_ORIGIN, req.headers['origin'])
+            res.setHeader(constants.HTTP2_HEADER_VARY, 'Origin, Access-Control-Allow-Origin')
         }
         res.setHeader('Access-Control-Allow-Credentials', 'true')
         switch (req.method) {
