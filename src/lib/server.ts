@@ -74,10 +74,10 @@ export function startServer(options: ServerOptions): Promise<Http2Server | undef
                         socketID = nextSocketID++
                     }
                     sockets[socketID] = socket
-                    ;((socket as unknown) as ISocketRequests).socketID = socketID
-                    ;((socket as unknown) as ISocketRequests).activeRequests = 0
+                    ;(socket as unknown as ISocketRequests).socketID = socketID
+                    ;(socket as unknown as ISocketRequests).activeRequests = 0
                     socket.on('close', () => {
-                        const socketID = ((socket as unknown) as ISocketRequests).socketID
+                        const socketID = (socket as unknown as ISocketRequests).socketID
                         if (socketID < nextSocketID) nextSocketID = socketID
                         sockets[socketID] = undefined
                     })
@@ -88,7 +88,7 @@ export function startServer(options: ServerOptions): Promise<Http2Server | undef
                     }
 
                     const start = process.hrtime()
-                    const socket = (req.socket as unknown) as ISocketRequests
+                    const socket = req.socket as unknown as ISocketRequests
                     socket.activeRequests++
                     req.on('close', () => {
                         socket.activeRequests--
@@ -165,7 +165,7 @@ export async function stopServer(): Promise<void> {
     for (const socketID of Object.keys(sockets)) {
         const socket = sockets[socketID]
         if (socket !== undefined) {
-            if (((socket as unknown) as ISocketRequests).activeRequests === 0) {
+            if ((socket as unknown as ISocketRequests).activeRequests === 0) {
                 socket.destroy()
             }
         }
