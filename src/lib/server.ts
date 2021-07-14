@@ -31,13 +31,34 @@ export type ServerOptions = {
 }
 
 export function startServer(options: ServerOptions): Promise<Http2Server | undefined> {
-    let cert: Buffer | undefined
-    let key: Buffer | undefined
+    let cert: Buffer | string | undefined
+    let key: Buffer | string | undefined
     try {
         cert = readFileSync('certs/tls.crt')
         key = readFileSync('certs/tls.key')
     } catch (err) {
-        logger.error({ msg: 'no certs' })
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const selfsigned = require('selfsigned') as {
+            generate: (
+                t: unknown,
+                options: {
+                    // keySize: 2048, // the size for the private key in bits (default: 1024)
+                    // days: 30, // how long till expiry of the signed certificate (default: 365)
+                    // algorithm: 'sha256', // sign the certificate with specified algorithm (default: 'sha1')
+                    // extensions: [{ name: 'basicConstraints', cA: true }], // certificate extensions array
+                    // pkcs7: true, // include PKCS#7 as part of the output (default: false)
+                    // clientCertificate: true, // generate client cert signed by the original key (default: false)
+                    // clientCertificateCN: 'jdoe', // client certificate's common name (default: 'John Doe jdoe123')
+                }
+            ) => {
+                cert: string
+                private: string
+            }
+        }
+        const pems = selfsigned.generate(null, {})
+        cert = pems.cert
+        key = pems.private
+        logger.warn({ msg: 'using self signed certs' })
     }
 
     try {
@@ -173,19 +194,30 @@ export async function stopServer(): Promise<void> {
 
     if (server?.listening) {
         logger.debug({ msg: 'closing server' })
-        await new Promise<void>((resolve) =>
-            setTimeout(
-                () =>
-                    server?.close((err: Error | undefined) => {
-                        if (err) {
-                            logger.error({ msg: 'server close error', name: err.name, error: err.message })
-                        } else {
-                            logger.debug({ msg: 'server closed' })
-                        }
-                        resolve()
-                    }),
-                25 * 1000
-            )
-        )
+        if (process.env.NODE_ENV === 'production') {
+            await new Promise<void>((resolve) => {
+                logger.debug({ msg: 'waiting 30 sec for graceful shutdown' })
+                setTimeout(
+                    () =>
+                        server?.close((err: Error | undefined) => {
+                            if (err) {
+                                logger.error({ msg: 'server close error', name: err.name, error: err.message })
+                            } else {
+                                logger.debug({ msg: 'server closed' })
+                            }
+                            resolve()
+                        }),
+                    25 * 1000
+                )
+            })
+        } else {
+            server?.close((err: Error | undefined) => {
+                if (err) {
+                    logger.error({ msg: 'server close error', name: err.name, error: err.message })
+                } else {
+                    logger.debug({ msg: 'server closed' })
+                }
+            })
+        }
     }
 }
