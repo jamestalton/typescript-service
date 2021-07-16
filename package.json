@@ -22,7 +22,7 @@
         "generate-certs": "mkdir -p certs && openssl req -subj '/C=US' -new -newkey rsa:2048 -sha256 -days 365 -nodes -x509 -keyout certs/tls.key -out certs/tls.crt"
     },
     "dependencies": {
-        "find-my-way": "^4.3.2",
+        "find-my-way": "^4.3.3",
         "pino": "^6.12.0",
         "selfsigned": "^1.10.11"
     },
