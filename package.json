@@ -23,7 +23,7 @@
     },
     "dependencies": {
         "find-my-way": "^4.3.3",
-        "pino": "^6.13.0",
+        "pino": "^6.13.1",
         "selfsigned": "^1.10.11"
     },
     "devDependencies": {
@@ -34,9 +34,9 @@
         "@typescript-eslint/parser": "^4.29.2",
         "eslint": "^7.32.0",
         "eslint-config-prettier": "^8.3.0",
-        "eslint-plugin-prettier": "^3.4.0",
+        "eslint-plugin-prettier": "^3.4.1",
         "jest": "^27.x.x",
-        "nock": "^13.1.1",
+        "nock": "^13.1.2",
         "pino-zen": "^1.0.20",
         "prettier": "^2.3.2",
         "ts-jest": "^27.x.x",
