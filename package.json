@@ -23,7 +23,7 @@
     },
     "dependencies": {
         "find-my-way": "^4.3.3",
-        "pino": "^6.13.1",
+        "pino": "^6.13.2",
         "selfsigned": "^1.10.11"
     },
     "devDependencies": {
