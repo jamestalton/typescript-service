@@ -38,7 +38,7 @@
         "jest": "^27.x.x",
         "nock": "^13.1.3",
         "pino-zen": "^1.0.20",
-        "prettier": "^2.3.2",
+        "prettier": "^2.4.0",
         "ts-jest": "^27.x.x",
         "ts-node": "^10.2.1",
         "ts-node-dev": "^1.1.8",
